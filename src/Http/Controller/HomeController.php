@@ -20,4 +20,12 @@ class HomeController
     {
         return admin_view("home");
     }
+
+    /**
+     * @RequestMapping("/__admin/welcome")
+     */
+    public function welcome()
+    {
+        return admin_view("home/welcome");
+    }
 }
