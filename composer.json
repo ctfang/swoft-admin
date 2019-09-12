@@ -1,0 +1,30 @@
+{
+  "name": "ctfang/swoft-admin",
+  "type": "library",
+  "version": "v0.0.1",
+  "keywords": [
+    "php",
+    "swoole",
+    "swoft",
+    "webtool"
+  ],
+  "description": "swoft webtool component",
+  "license": "Apache-2.0",
+  "authors" : [
+    {
+      "name": "ctfang",
+      "email": "2206582181@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "swlib/saber": "*"
+  },
+  "autoload": {
+    "classmap": [
+    ],
+    "psr-4": {
+      "Swoft\\SwoftAdmin\\": "src/"
+    }
+  }
+}

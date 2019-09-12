@@ -1,0 +1,18 @@
+<?php declare(strict_types=1);
+
+namespace App\Console\Command;
+
+use Swoft\Console\Annotation\Mapping\Command;
+use Swoft\Console\Annotation\Mapping\CommandMapping;
+
+/**
+ * Class TestCommand
+ *
+ * @since 2.0
+ *
+ * @Command(name="{pre}",desc="{des}",coroutine=false)
+ */
+class {name}Command
+{
+
+}
