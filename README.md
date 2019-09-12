@@ -11,3 +11,7 @@ composer require ctfang/swoft-admin
 ~~~~
 ADMIN_WEB="http://admin.com/"
 ~~~~
+
+## 访问
+
+http://your.com/__admin
