@@ -48,3 +48,15 @@ ADMIN_ENABLE=1
 
 http://your.com/__admin/home
 
+
+## 计划
+
+- [x] [控制器展示&创建](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller/RouteController.php) 
+- [x] [中间件展示&创建](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller/RouteController.php) 
+- [x] [路由导出postmen](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller/RouteController.php) 
+- [x] [Model目录展示&创建](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
+- [x] [定时器展示](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
+- [x] [命令展示&创建](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
+- [ ] 路由导出自动生成参数
+- [ ] 启动&关闭http:start
+- [ ] 界面创建路由(空函数)
