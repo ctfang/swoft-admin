@@ -20,7 +20,7 @@ class AdminServer extends \Swoft\Http\Server\HttpServer
     /**
      * @var string
      */
-    protected $pidName = 'swoft-http';
+    protected $pidName = 'admin-http';
 
     /**
      * Pid file
