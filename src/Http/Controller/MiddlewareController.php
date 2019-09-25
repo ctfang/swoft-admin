@@ -13,11 +13,13 @@ use SwoftAdmin\Tool\View\Button\NewWindow;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
 use SwoftAdmin\Tool\View\Form;
 use SwoftAdmin\Tool\View\Table;
+use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
 
 /**
  * Class MiddlewareController
  * @package App\Http\Controller
  * @Controller(prefix="/__admin/mid")
+ * @\Swoft\Http\Server\Annotation\Mapping\Middleware(LoginMiddleware::class)
  */
 class MiddlewareController
 {

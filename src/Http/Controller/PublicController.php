@@ -39,8 +39,6 @@ class PublicController
      */
     public function loginPost(Request $request,Response $response)
     {
-        Context::set();
-
         return $response->redirect('/__admin/home');
     }
 }

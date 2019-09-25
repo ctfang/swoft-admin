@@ -5,17 +5,20 @@ namespace SwoftAdmin\Tool\Http\Controller;
 
 use Swoft\Http\Message\Request;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
+use Swoft\Http\Server\Annotation\Mapping\Middleware;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use SwoftAdmin\Exec\Controller\Model;
 use SwoftAdmin\Tool\Exec;
 use SwoftAdmin\Tool\View\Button\NewWindow;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
 use SwoftAdmin\Tool\View\Table;
+use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
 
 /**
  * Class ModelController
  * @package Swoft\SwoftAdmin\Http\Controller
  * @Controller(prefix="/__admin/model")
+ * @Middleware(LoginMiddleware::class)
  */
 class ModelController
 {

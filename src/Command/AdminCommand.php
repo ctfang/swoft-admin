@@ -13,6 +13,7 @@ use Swoft\Console\Helper\Show;
 use Swoft\Http\Server\HttpServer;
 use Swoft\Server\Command\BaseServerCommand;
 use Swoft\Server\Exception\ServerException;
+use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
 use function bean;
 use function input;
 use function output;
@@ -45,6 +46,8 @@ class AdminCommand extends BaseServerCommand
      */
     public function start(): void
     {
+        LoginMiddleware::$enable = true;
+
         $server = $this->createServer();
 
         // Check if it has started

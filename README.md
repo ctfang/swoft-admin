@@ -35,8 +35,14 @@ ADMIN_WEB="http://127.0.0.1:18366/"
 ~~~~
 php bin/swoft admin:start
 ~~~~
+
+如果需要在 `http:start` 也能访问,需要设置 `.env`
+
+````php
+ADMIN_ENABLE=1
+````
+
 ## 访问
 
-http://your.com/__admin
+http://your.com/__admin/home
 
-无密码

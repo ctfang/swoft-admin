@@ -4,16 +4,19 @@
 namespace SwoftAdmin\Tool\Http\Controller;
 
 use Swoft\Http\Server\Annotation\Mapping\Controller;
+use Swoft\Http\Server\Annotation\Mapping\Middleware;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use SwoftAdmin\Exec\Controller\Crontab;
 use SwoftAdmin\Tool\Exec;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
 use SwoftAdmin\Tool\View\Table;
+use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
 
 /**
  * Class CrontabController
  * @package SwoftAdmin\Tool\Http\Controller
  * @Controller(prefix="/__admin/crontab")
+ * @Middleware(LoginMiddleware::class)
  */
 class CrontabController
 {
