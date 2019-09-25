@@ -4,8 +4,10 @@ swoft的web开发辅助工具
 ## 安装
 
 ~~~~
-composer require ctfang/swoft-admin
+composer require ctfang/swoft-admin 
 ~~~~
+
+下载主干 composer require ctfang/swoft-admin dev-master 
 
 ## 配置
 在 `app/bean.php` 新增
