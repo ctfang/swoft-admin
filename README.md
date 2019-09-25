@@ -58,5 +58,7 @@ http://your.com/__admin/home
 - [x] [定时器展示](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
 - [x] [命令展示&创建](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
 - [ ] 路由导出自动生成参数
-- [ ] 启动&关闭http:start
+- [ ] 启动&关闭http
 - [ ] 界面创建路由(空函数)
+- [ ] 配置查看
+- [ ] 控制器代码查看
