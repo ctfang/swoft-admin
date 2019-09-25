@@ -1,14 +1,20 @@
 <?php
 
 
-namespace Swoft\SwoftAdmin\Http\Controller;
+namespace SwoftAdmin\Tool\Http\Controller;
 
 
 use Swoft\Context\Context;
 use Swoft\Http\Message\Request;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
-use Swoft\SwoftAdmin\Exec\Exec;
+use SwoftAdmin\Exec\Controller\Middleware;
+use SwoftAdmin\Exec\Controller\Postmen;
+use SwoftAdmin\Tool\Exec;
+use SwoftAdmin\Tool\View\Button\NewWindow;
+use SwoftAdmin\Tool\View\Button\ReloadButton;
+use SwoftAdmin\Tool\View\Form;
+use SwoftAdmin\Tool\View\Table;
 
 /**
  * Class RouteController
@@ -23,11 +29,21 @@ class RouteController
      */
     public function httpRoutes()
     {
-        $routes = Exec::run("routes");
+        $view = new Table();
+        $view->listTitle['id'] = "ID";
+        $view->listTitle['title'] = "标题说明";
+        $view->listTitle['path'] = "路由";
+        $view->listTitle['method'] = "约束";
+        $view->listTitle['controller'] = "控制器";
+        $view->listTitle['action'] = "函数";
 
-        $data['routes'] = $routes;
+        $view->listData = Exec::bean(\SwoftAdmin\Exec\Controller\Controller::class)->getRoutes();
 
-        return admin_view('control/routes', $data);
+        $view->listHeader[] = new ReloadButton();
+        $view->listHeader[] = new NewWindow('control/addRoute','新增路由');
+        $view->listHeader[] = new NewWindow('control/setPostmen','导出postmen');
+
+        return $view->toString();
     }
 
     /**
@@ -35,32 +51,49 @@ class RouteController
      */
     public function setPostmen()
     {
-        $routes = Exec::run("postmen");
+        $routes = Exec::bean(Postmen::class)->down();
 
-        $json   = json_encode($routes,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+        $json = json_encode($routes, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         return Context::get()
             ->getResponse()
             ->withContent($json)
-            ->withHeader('Content-Type',"application/octet-stream")
-            ->withHeader('Content-Disposition','attachment; filename=admin-api.json');
+            ->withHeader('Content-Type', "application/octet-stream")
+            ->withHeader('Content-Disposition', 'attachment; filename=admin-api.json');
     }
 
     /**
      * 新增控制器
-     * @RequestMapping(route="add")
+     * @RequestMapping(route="addControl")
      */
     public function addController()
     {
-        $routes = Exec::run("mids");
-        // 所有中间件
-        $data['mids'] = $routes;
-        return admin_view('control/addCon', $data);
+        $list = Exec::bean(Middleware::class)->getMiddleware();
+
+        $mids = [];
+        foreach ($list as $item){
+            $item = (array)$item;
+            if ($item['isGroup']) continue;
+            $mids[] = [
+                'field'=>'mids',
+                'title'=>$item['title'],
+                'value'=>$item['path'],
+            ];
+        }
+
+        $view = new Form();
+        $view->action = 'control/addControlPost';
+
+        $view->item[] = new Form\InputForm('name',"类名",'控制器名称','required');
+        $view->item[] = new Form\InputBlockForm("选择非全局中间件",$mids);
+        $view->item[] = new Form\TextareaForm('title',"标题",'类的首行注释');
+
+        return $view->toString();
     }
 
     /**
      * 新增控制器
-     * @RequestMapping(route="addPost")
+     * @RequestMapping(route="addControlPost")
      */
     public function addControllers()
     {
@@ -68,15 +101,15 @@ class RouteController
 
         $title = $post['title'];
         $name = $post['name'];
-        $mids = $post['mids']??[];
+        $mids = $post['mids'] ?? [];
 
-        foreach ((array)$mids as $key=>$mid){
+        foreach ((array) $mids as $key => $mid) {
             $mids[$key] = urlencode($mid);
         }
 
-        Exec::run("control/add",$name,$title,$mids);
+        $data = Exec::bean(\SwoftAdmin\Exec\Controller\Controller::class)->addControllers($name, $title, $mids);
 
-        return admin_view('close');
+        return $data;
     }
 
     /**
@@ -85,11 +118,19 @@ class RouteController
      */
     public function httpController()
     {
-        $routes = Exec::run("control/list");
+        $view = new Table();
+        $view->listTitle['id'] = "ID";
+        $view->listTitle['title'] = "标题说明";
+        $view->listTitle['path'] = "Path";
+        $view->listTitle['mid'] = "中间件";
+        $view->listTitle['prefix'] = "路由前缀";
 
-        $data['list'] = $routes;
+        $view->listData = Exec::bean(\SwoftAdmin\Exec\Controller\Controller::class)->getControllers();
 
-        return admin_view('control/control', $data);
+        $view->listHeader[] = new ReloadButton();
+        $view->listHeader[] = new NewWindow('control/addControl','新增控制器');
+
+        return $view->toString();
     }
 
     /**

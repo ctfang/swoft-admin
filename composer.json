@@ -1,7 +1,6 @@
 {
   "name": "ctfang/swoft-admin",
   "type": "library",
-  "version": "v0.0.1",
   "keywords": [
     "php",
     "swoole",
@@ -24,7 +23,8 @@
     "classmap": [
     ],
     "psr-4": {
-      "Swoft\\SwoftAdmin\\": "src/"
+      "SwoftAdmin\\Tool\\": "src/",
+      "SwoftAdmin\\Exec\\": "exec/"
     }
   }
 }

@@ -1,14 +1,17 @@
 <?php
 
 
-namespace Swoft\SwoftAdmin\Http\Controller;
+namespace SwoftAdmin\Tool\Http\Controller;
 
 use Swoft\Http\Message\Request;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
-use Swoft\SwoftAdmin\Exec\Exec;
-use Swoft\SwoftAdmin\Model\Data\AddView;
-use Swoft\SwoftAdmin\Model\Data\ListView;
+use SwoftAdmin\Exec\Controller\Console;
+use SwoftAdmin\Tool\Exec;
+use SwoftAdmin\Tool\View\Button\NewWindow;
+use SwoftAdmin\Tool\View\Button\ReloadButton;
+use SwoftAdmin\Tool\View\Form;
+use SwoftAdmin\Tool\View\Table;
 
 /**
  * Class Console
@@ -22,25 +25,26 @@ class ConsoleController
      */
     public function command()
     {
-        $list = Exec::run("console/command");
+        $list = Exec::bean(Console::class)->command();
 
-        $listView = new ListView();
+        $listView = new Table();
         $listView->title = "命令应用";
         $listView->listTitle = [
             "name" => '命令',
             "des" => '说明',
             "handel" => '处理',
         ];
-        $listView->createUrl = 'console/addClassShow';
+        $listView->listHeader[] = new ReloadButton();
+        $listView->listHeader[] = new NewWindow('console/addClassShow', '新增命令');
 
         $listView->listData = is_array($list) ? $list : [];
 
-        return $listView->toView();
+        return $listView->toString();
     }
 
 
     /**
-     * 新增Dao
+     * 新增命令
      * @RequestMapping("addClassShow")
      * @param  Request  $request
      * @return \Swoft\Http\Message\Response
@@ -48,14 +52,14 @@ class ConsoleController
      */
     public function addDaoShow(Request $request)
     {
-        $addView = new AddView();
-        $addView->title = "命令行应用";
-        $addView->addText('des',"说明",'');
-        $addView->addText('className',"类名","自动加 Command 后缀");
-        $addView->addText('pre',"命令前缀","");
+        $view = new Form();
+        $view->title = "新增命令类";
+        $view->item[] = new Form\InputForm('des','说明');
+        $view->item[] = new Form\InputForm('className','类名');
+        $view->item[] = new Form\InputForm('pre','命令前缀');
+        $view->action = "console/addClass";
 
-        $addView->createUrl = 'console/addClass';
-        return $addView->toView();
+        return $view->toString();
     }
 
 
@@ -63,13 +67,15 @@ class ConsoleController
      * 新增类文件
      * @param  Request  $request
      * @RequestMapping("addClass")
+     * @return string
      */
     public function addClass(Request $request)
     {
-        $name = $request->post('className','');
-        $des = $request->post('des','');
-        $pre = $request->post("pre",'');
+        $name = $request->post('className', '');
+        $des = $request->post('des', '');
+        $pre = $request->post("pre", '');
 
-        Exec::run("console/add", $name, $des, $pre);
+        Exec::bean(Console::class)->add($name, $des, $pre);
+        return "新增类文件 OK";
     }
 }

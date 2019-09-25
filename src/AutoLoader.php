@@ -1,11 +1,10 @@
 <?php
 
 
-namespace Swoft\SwoftAdmin;
+namespace SwoftAdmin\Tool;
 
 
 use Swoft\Helper\ComposerJSON;
-use Swoft\SwoftAdmin\Exec\Exec;
 use Swoft\SwoftComponent;
 
 class AutoLoader extends SwoftComponent
@@ -28,13 +27,8 @@ class AutoLoader extends SwoftComponent
      */
     public function getPrefixDirs(): array
     {
-        Exec::$mainPath = __DIR__."/main.php";
-
         return [
-            __NAMESPACE__."\\Http\\Controller" => __DIR__.'/Http/Controller',
-            __NAMESPACE__."\\Command" => __DIR__."/Command",
-//            __NAMESPACE__."\\Model" => __DIR__."/Model",
-            __NAMESPACE__."\\Helper" => __DIR__."/Helper",
+            __NAMESPACE__ => __DIR__,
         ];
     }
 

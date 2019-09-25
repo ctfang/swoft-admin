@@ -1,0 +1,28 @@
+<?php declare(strict_types=1);
+
+namespace App\Crontab;
+
+use App\Model\Entity\User;
+use Swoft\Crontab\Annotaion\Mapping\Cron;
+use Swoft\Crontab\Annotaion\Mapping\Scheduled;
+use Swoft\Log\Helper\CLog;
+
+/**
+ * Class CronTask
+ *
+ * @since 2.0
+ *
+ * @Scheduled()
+ */
+class CronTask
+{
+    /**
+     * 由admin新增的定时任务
+     * @Cron("0 * * * * *")
+     */
+    public function minuteTask()
+    {
+        CLog::info("minute task run: %s ", date('Y-m-d H:i:s', time()));
+    }
+
+}

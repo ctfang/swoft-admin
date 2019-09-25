@@ -5,31 +5,41 @@ use Swoft\Http\Message\Response;
 use Swoft\View\Renderer;
 
 if (!function_exists('admin_url')) {
-    function admin_url(string $url)
+    function admin_url(string $url,$echo = true)
     {
-        echo "/__admin/".$url;
+        $str = "/__admin/".$url;
+        if ($echo) {
+            echo $str;
+        } else {
+            return $str;
+        }
     }
 }
 
 if (!function_exists('admin_src')) {
-    function admin_src()
+    function admin_src($echo = true)
     {
-        echo env('ADMIN_WEB',"http://admin.com/web/");
+        $str = env('ADMIN_WEB', "http://127.0.0.1/public/");;
+        if ($echo) {
+            echo $str;
+        } else {
+            return $str;
+        }
     }
 }
 
 if (!function_exists('admin_view')) {
     /**
-     * @param string            $template
-     * @param array             $data
-     * @param string|null|false $layout
+     * @param  string  $template
+     * @param  array  $data
+     * @param  string|null|false  $layout
      *
      * @return Response
      * @throws Throwable
      */
     function admin_view(string $template, array $data = [], $layout = null)
     {
-        $viewPath = dirname(__DIR__)."/resource/views/";
+        $viewPath = dirname(dirname(__DIR__))."/resource/views/";
         /**
          * @var Renderer $renderer
          * @var Response $response
@@ -37,7 +47,7 @@ if (!function_exists('admin_view')) {
         $renderer = Swoft::getSingleton('view');
         $renderer->setViewsPath($viewPath);
         $response = Context::get()->getResponse();
-        $content  = $renderer->render($viewPath.$template, $data, $layout);
+        $content = $renderer->render($viewPath.$template, $data, $layout);
 
         return $response
             ->withContent($content)

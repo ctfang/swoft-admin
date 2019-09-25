@@ -1,14 +1,16 @@
 <?php
 
 
-namespace Swoft\SwoftAdmin\Http\Controller;
+namespace SwoftAdmin\Tool\Http\Controller;
 
 use Swoft\Http\Message\Request;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
-use Swoft\SwoftAdmin\Exec\Exec;
-use Swoft\SwoftAdmin\Model\Data\AddView;
-use Swoft\SwoftAdmin\Model\Data\ListView;
+use SwoftAdmin\Exec\Controller\Model;
+use SwoftAdmin\Tool\Exec;
+use SwoftAdmin\Tool\View\Button\NewWindow;
+use SwoftAdmin\Tool\View\Button\ReloadButton;
+use SwoftAdmin\Tool\View\Table;
 
 /**
  * Class ModelController
@@ -23,20 +25,21 @@ class ModelController
      */
     public function dao()
     {
-        $list = Exec::run("model/dao");
+        $list = Exec::bean(Model::class)->dao();
 
-        $listView = new ListView();
+        $listView = new Table();
         $listView->title = "Dao";
         $listView->listTitle = [
             "title" => '标题',
             "path" => '类名',
             "bean" => '拥有Bean',
         ];
-        $listView->createUrl = 'model/addClassShow';
+        $listView->listHeader[] = new ReloadButton();
+        $listView->listHeader[] = new NewWindow('model/addClassShow','新增Dao');
 
         $listView->listData = is_array($list) ? $list : [];
 
-        return $listView->toView();
+        return $listView->toString();
     }
 
     /**
@@ -69,41 +72,44 @@ class ModelController
      */
     public function data()
     {
-        $list = Exec::run("model/data");
+        $list = Exec::bean(Model::class)->data();
 
-        $listView = new ListView();
-        $listView->title = "Data";
+        $listView = new Table();
+        $listView->title = "Data目录";
         $listView->listTitle = [
             "title" => '标题',
             "path" => '类名',
             "bean" => '拥有Bean',
         ];
-        $listView->createUrl = 'model/addClassShow?title=Data&namespace=App/Model/Data/&suffix=Data';
+        $listView->listHeader[] = new ReloadButton();
+        $listView->listHeader[] = new NewWindow('model/addClassShow?title=Data&namespace=App/Model/Data/&suffix=Data','新增Data');
 
         $listView->listData = is_array($list) ? $list : [];
 
-        return $listView->toView();
+        return $listView->toString();
     }
 
     /**
+     * Logic目录
      * @RequestMapping("logic")
      */
     public function logic()
     {
-        $list = Exec::run("model/logic");
+        $list = Exec::bean(Model::class)->logic();
 
-        $listView = new ListView();
-        $listView->title = "Logic";
+        $listView = new Table();
+        $listView->title = "Logic目录";
         $listView->listTitle = [
             "title" => '标题',
             "path" => '类名',
             "bean" => '拥有Bean',
         ];
-        $listView->createUrl = 'model/addClassShow?title=Logic&namespace=App/Model/Logic/&suffix=Logic';
+        $listView->listHeader[] = new ReloadButton();
+        $listView->listHeader[] = new NewWindow('model/addClassShow?title=Logic&namespace=App/Model/Logic/&suffix=Logic','新增Logic');
 
         $listView->listData = is_array($list) ? $list : [];
 
-        return $listView->toView();
+        return $listView->toString();
     }
 
     /**
@@ -118,6 +124,6 @@ class ModelController
         $title = $request->post('title','');
         $suffix = $request->post("suffix",'');
 
-        Exec::run("model/addClass", $namespace, $name, $title, $suffix);
+        Exec::bean(Model::class)->addClass($namespace, $name, $title, $suffix);
     }
 }

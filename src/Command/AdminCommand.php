@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Swoft\SwoftAdmin\Command;
+namespace SwoftAdmin\Tool\Command;
 
 use ReflectionException;
 use Swoft;
