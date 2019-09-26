@@ -22,10 +22,17 @@ class HomeController
     /**
      * 首页
      * @RequestMapping("/__admin/home")
+     * @param  Request  $request
+     * @return Home
      */
-    public function home()
+    public function home(Request $request)
     {
-        return (new Home())->toString();
+        $view = new Home();
+        $cookie = $request->getCookieParams();
+        $token = $cookie["__admin_token"] ?? "";
+        $arr = explode('.', $token);
+        $view->username = $arr[1] ?? "admin";
+        return $view->toString();
     }
 
     /**
@@ -39,18 +46,18 @@ class HomeController
         $view = new Welcome();
 
         $root = dirname(\Swoft::getAlias("@app"));
-        $size = round(disk_free_space($root) / 1073741824 * 100) / 100 . ' GB';
+        $size = round(disk_free_space($root) / 1073741824 * 100) / 100 .' GB';
 
-        $view->system[] = ['key'=>'监听端口','value'=>$request->getServerParams()['server_port']];
-        $view->system[] = ['key'=>'操作系统','value'=>\PHP_OS];
-        $view->system[] = ['key'=>'PHP版本','value'=>\PHP_VERSION];
-        $view->system[] = ['key'=>'Swoole版本','value'=>\SWOOLE_VERSION];
-        $view->system[] = ['key'=>'Swoft 版本','value'=>\Swoft::VERSION];
-        $view->system[] = ['key'=>'ROOT目录','value'=>dirname($root)];
-        $view->system[] = ['key'=>'ROOT可用','value'=>$size];
+        $view->system[] = ['key' => '监听端口', 'value' => $request->getServerParams()['server_port']];
+        $view->system[] = ['key' => '操作系统', 'value' => \PHP_OS];
+        $view->system[] = ['key' => 'PHP版本', 'value' => \PHP_VERSION];
+        $view->system[] = ['key' => 'Swoole版本', 'value' => \SWOOLE_VERSION];
+        $view->system[] = ['key' => 'Swoft 版本', 'value' => \Swoft::VERSION];
+        $view->system[] = ['key' => 'ROOT目录', 'value' => dirname($root)];
+        $view->system[] = ['key' => 'ROOT可用', 'value' => $size];
 
-        foreach (\get_loaded_extensions() as $extension){
-            $view->ext[] = ['key'=>$extension];
+        foreach (\get_loaded_extensions() as $extension) {
+            $view->ext[] = ['key' => $extension];
         }
 
         return $view->toString();

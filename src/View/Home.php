@@ -8,6 +8,7 @@ class Home extends BaseView
 {
     public $title = "首页";
     protected $view = 'home';
+    public $username = 'admin';
 
     public $leftMenu = [
         [

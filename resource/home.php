@@ -3,7 +3,7 @@
 
 use SwoftAdmin\Tool\View\Home;
 
-$this->include('layouts/container') ?>
+$this->include('layouts/container',['username'=>$data->username]) ?>
 <?php $this->include('layouts/left', $data->leftMenu) ?>
 <!-- 中部开始 -->
 <!-- 右侧主体开始 -->
