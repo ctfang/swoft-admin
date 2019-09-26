@@ -54,7 +54,7 @@ class PublicController
             $token = $this->login->getToken($username);
             return $response->withCookie("__admin_token",$token)->redirect('/__admin/home');
         }
-        
+
         return $response->redirect('login');
     }
 }

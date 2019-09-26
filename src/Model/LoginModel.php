@@ -79,6 +79,11 @@ class LoginModel
 
         $username = $arr[1];
         $time = $arr[0];
+
+        if ( $time<(time()-3600*8) ){
+            return false;
+        }
+
         $sign = $arr[2];
 
         $config = $this->getConfig();
