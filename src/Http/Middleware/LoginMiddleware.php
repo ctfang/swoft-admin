@@ -9,6 +9,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Swoft\Bean\Annotation\Mapping\Bean;
+use Swoft\Bean\Annotation\Mapping\Inject;
+use SwoftAdmin\Tool\Model\LoginModel;
 
 /**
  * Class LoginMiddleware
@@ -18,6 +20,12 @@ use Swoft\Bean\Annotation\Mapping\Bean;
 class LoginMiddleware implements MiddlewareInterface
 {
     public static $enable = null;
+
+    /**
+     * @Inject()
+     * @var LoginModel
+     */
+    protected $login;
 
     /**
      * Process an incoming server request.
@@ -34,9 +42,20 @@ class LoginMiddleware implements MiddlewareInterface
         } else {
             $enable = self::$enable;
         }
-        if ($enable) {
-            return $handler->handle($request);
+        if (!$enable) {
+            return context()->getResponse()->withContent("admin 未开启")->withStatus(404);
         }
-        return context()->getResponse()->withContent("admin 未开启")->withStatus(404);
+
+        $cookie = $request->getCookieParams();
+        $token    = $cookie["__admin_token"]??"";
+
+        if ( !$token || !$this->login->verifyToken($token) ){
+            $path = $request->getUri()->getPath();
+            if ( $path!=admin_url("login",false) ){
+                return context()->getResponse()->redirect(admin_url("login",false));
+            }
+        }
+
+        return $handler->handle($request);
     }
 }

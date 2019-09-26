@@ -23,8 +23,12 @@ class BaseView
      */
     public function link(string $href, string $rel = 'stylesheet')
     {
-        $href = admin_src(false).$href;
-        $this->viewLink[] = "<link rel=\"{$rel}\" href=\"{$href}\">";
+        if ( strpos($href,'http')===false ){
+            $href = admin_src(false).$href;
+            $this->viewLink[] = "<link rel=\"{$rel}\" href=\"{$href}\">";
+        }else{
+            $this->viewLink[] = "<link rel=\"{$rel}\" href=\"{$href}\">";
+        }
     }
 
     /**
@@ -33,7 +37,12 @@ class BaseView
      */
     public function script(string $src)
     {
-        $this->viewScript[] = "<script src=\"".$src."\"></script>";
+        if ( strpos($src,'http')===false ){
+            $src = admin_src(false).$src;
+            $this->viewScript[] = "<script src=\"".$src."\"></script>";
+        }else{
+            $this->viewScript[] = "<script src=\"".$src."\"></script>";
+        }
     }
 
     public function toString()

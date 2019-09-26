@@ -44,9 +44,13 @@ php bin/swoft admin:start
 ADMIN_ENABLE=1
 ````
 
-## 访问
+## 访问,默认账号密码 `username = admin ; password = 123456`
 
-http://your.com/__admin/home
+http://your.com/__admin/login
+
+## 修改密码
+
+复制文件 `vendor/ctfang/swoft-admin/src/Config/user.config.php` 到 `@config/__admin.php@config/__admin.php`
 
 
 ## 计划
@@ -57,6 +61,7 @@ http://your.com/__admin/home
 - [x] [Model目录展示&创建](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
 - [x] [定时器展示](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
 - [x] [命令展示&创建](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
+- [x] [Web Terminal](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
 - [ ] 路由导出自动生成参数
 - [ ] 启动&关闭http
 - [ ] 界面创建路由(空函数)

@@ -3,12 +3,14 @@
 
 namespace SwoftAdmin\Tool\Http\Controller;
 
+use Swoft\Bean\Annotation\Mapping\Inject;
 use Swoft\Context\Context;
 use Swoft\Http\Message\Request;
 use Swoft\Http\Message\Response;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
+use SwoftAdmin\Tool\Model\LoginModel;
 use SwoftAdmin\Tool\View\Login;
 
 /**
@@ -18,6 +20,12 @@ use SwoftAdmin\Tool\View\Login;
  */
 class PublicController
 {
+    /**
+     * @Inject()
+     * @var LoginModel
+     */
+    protected $login;
+
     /**
      * show login
      * @RequestMapping("login",method={RequestMethod::GET})
@@ -39,6 +47,14 @@ class PublicController
      */
     public function loginPost(Request $request,Response $response)
     {
-        return $response->redirect('/__admin/home');
+        $username = $request->post("username");
+        $password = $request->post("password");
+
+        if ( $this->login->login($username,$password) ){
+            $token = $this->login->getToken($username);
+            return $response->withCookie("__admin_token",$token)->redirect('/__admin/home');
+        }
+        
+        return $response->redirect('login');
     }
 }
