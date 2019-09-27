@@ -8,15 +8,18 @@ use Swoft\Context\Context;
 use Swoft\Http\Message\Request;
 use Swoft\Http\Message\Response;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
+use Swoft\Http\Server\Annotation\Mapping\Middleware;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
 use SwoftAdmin\Tool\Model\LoginModel;
 use SwoftAdmin\Tool\View\Login;
+use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
 
 /**
  * Class PublicController
  * @package SwoftAdmin\Tool\Http\Controller
  * @Controller(prefix="/__admin")
+ * @Middleware(LoginMiddleware::class)
  */
 class PublicController
 {
@@ -69,5 +72,17 @@ class PublicController
         }
 
         return $response->redirect('login');
+    }
+
+    /**
+     * 退出登录
+     * @RequestMapping("logout")
+     * @param  Request  $request
+     * @param  Response  $response
+     * @return \Swoft\Http\Message\Concern\CookiesTrait|Response
+     */
+    public function logout(Request $request, Response $response)
+    {
+        return $response->withCookie($this->login->tokenKey,'')->redirect('/__admin/login');
     }
 }

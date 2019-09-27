@@ -18,4 +18,16 @@ class Table extends BaseView
     public $nac = [];
     /** @var array 添加按钮 */
     public $listHeader = [];
+
+    public $listButton = [];
+
+    /**
+     * 操作字段使用的按钮
+     * @param  BaseButton  $baseButton
+     * @return Table
+     */
+    public function addListButton(BaseButton $baseButton)
+    {
+        $this->listButton[] = $baseButton;
+    }
 }

@@ -3,7 +3,10 @@
 
 namespace SwoftAdmin\Tool\View;
 
-
+/**
+ * 首页
+ * @package SwoftAdmin\Tool\View
+ */
 class Home extends BaseView
 {
     public $title = "首页";
@@ -14,11 +17,21 @@ class Home extends BaseView
 
     protected static $merMenu = [];
 
+    /**
+     * @param $url
+     * @param $name
+     * @param  string  $icon
+     * @param  null  $group 分组名称
+     */
     public static function addBaseMenu($url, $name, $icon = '&#xe6b4;', $group = null)
     {
         self::$merMenu[$group][$name] = ['icon' => $icon, 'url' => $url];
     }
 
+    /**
+     * 获取菜单
+     * @return array
+     */
     public function getLeftMenu()
     {
         $menu = $this->leftMenu;

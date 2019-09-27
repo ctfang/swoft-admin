@@ -38,7 +38,7 @@
         <dd>
           <a onclick="xadmin.open('切换帐号','https://github.com/ctfang/swoft-admin')">切换帐号</a></dd>
         <dd>
-          <a href="<?php admin_src(); ?>login.html">退出</a></dd>
+          <a href="<?php admin_url("logout"); ?>">退出</a></dd>
       </dl>
     </li>
     <li class="layui-nav-item to-index">

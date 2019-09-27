@@ -10,9 +10,9 @@ $data->link('/css/login.css');
     <div id="darkbannerwrap"></div>
 
     <form method="post" class="layui-form" >
-        <input name="username" placeholder="用户名"  type="text" lay-verify="required" class="layui-input" >
+        <input name="username" placeholder="用户名"  type="text" lay-verify="required" value="admin" class="layui-input" >
         <hr class="hr15">
-        <input name="password" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
+        <input name="password" lay-verify="required" placeholder="密码"  type="password" value="123456" class="layui-input">
         <hr class="hr15">
         <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
         <hr class="hr20" >

@@ -10,6 +10,7 @@ use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
 use SwoftAdmin\Exec\Controller\Middleware;
 use SwoftAdmin\Tool\Exec;
 use SwoftAdmin\Tool\View\Button\NewWindow;
+use SwoftAdmin\Tool\View\Button\NewWindowIcon;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
 use SwoftAdmin\Tool\View\Form;
 use SwoftAdmin\Tool\View\Table;
@@ -49,6 +50,11 @@ class MiddlewareController
 
         $view->listHeader[] = new ReloadButton();
         $view->listHeader[] = new NewWindow('mid/create','创建中间件');
+
+        $button = new NewWindowIcon('file/show', '文件内容');
+        $button->mix = "true";
+        $button->addField(['path'=>'path']);
+        $view->addListButton($button);
 
         return $view->toString();
     }

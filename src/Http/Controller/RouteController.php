@@ -12,7 +12,9 @@ use SwoftAdmin\Exec\Controller\Middleware;
 use SwoftAdmin\Exec\Controller\Postmen;
 use SwoftAdmin\Tool\Exec;
 use SwoftAdmin\Tool\View\Button\NewWindow;
+use SwoftAdmin\Tool\View\Button\NewWindowIcon;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
+use SwoftAdmin\Tool\View\FileContent;
 use SwoftAdmin\Tool\View\Form;
 use SwoftAdmin\Tool\View\Table;
 use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
@@ -42,8 +44,13 @@ class RouteController
         $view->listData = Exec::bean(\SwoftAdmin\Exec\Controller\Controller::class)->getRoutes();
 
         $view->listHeader[] = new ReloadButton();
-        $view->listHeader[] = new NewWindow('control/addRoute','新增路由');
-        $view->listHeader[] = new NewWindow('control/setPostmen','导出postmen');
+        $view->listHeader[] = new NewWindow('control/addRoute', '新增路由');
+        $view->listHeader[] = new NewWindow('control/setPostmen', '导出postmen');
+
+        $button = new NewWindowIcon('file/show', '文件内容');
+        $button->mix = "true";
+        $button->addField(['controller'=>'path']);
+        $view->addListButton($button);
 
         return $view->toString();
     }
@@ -73,22 +80,24 @@ class RouteController
         $list = Exec::bean(Middleware::class)->getMiddleware();
 
         $mids = [];
-        foreach ($list as $item){
-            $item = (array)$item;
-            if ($item['isGroup']) continue;
+        foreach ($list as $item) {
+            $item = (array) $item;
+            if ($item['isGroup']) {
+                continue;
+            }
             $mids[] = [
-                'field'=>'mids',
-                'title'=>$item['title'],
-                'value'=>$item['path'],
+                'field' => 'mids',
+                'title' => $item['title'],
+                'value' => $item['path'],
             ];
         }
 
         $view = new Form();
         $view->action = 'control/addControlPost';
 
-        $view->item[] = new Form\InputForm('name',"类名",'控制器名称','required');
-        $view->item[] = new Form\InputBlockForm("选择非全局中间件",$mids);
-        $view->item[] = new Form\TextareaForm('title',"标题",'类的首行注释');
+        $view->item[] = new Form\InputForm('name', "类名", '控制器名称', 'required');
+        $view->item[] = new Form\InputBlockForm("选择非全局中间件", $mids);
+        $view->item[] = new Form\TextareaForm('title', "标题", '类的首行注释');
 
         return $view->toString();
     }
@@ -130,7 +139,12 @@ class RouteController
         $view->listData = Exec::bean(\SwoftAdmin\Exec\Controller\Controller::class)->getControllers();
 
         $view->listHeader[] = new ReloadButton();
-        $view->listHeader[] = new NewWindow('control/addControl','新增控制器');
+        $view->listHeader[] = new NewWindow('control/addControl', '新增控制器');
+
+        $button = new NewWindowIcon('file/show', '文件内容');
+        $button->mix = "true";
+        $button->addField(['path']);
+        $view->addListButton($button);
 
         return $view->toString();
     }

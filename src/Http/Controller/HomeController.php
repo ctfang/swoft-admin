@@ -21,6 +21,13 @@ use SwoftAdmin\Tool\View\Welcome;
  */
 class HomeController
 {
+    private $date;
+
+    public function __construct()
+    {
+        $this->date = date("Y-m-d H:i:s");
+    }
+
     /**
      * 首页
      * @RequestMapping("/__admin/home")
@@ -49,6 +56,8 @@ class HomeController
         $root = dirname(\Swoft::getAlias("@app"));
         $size = round(disk_free_space($root) / 1073741824 * 100) / 100 .' GB';
 
+        $view->system[] = ['key' => '启动时间', 'value' => $this->date];
+        $view->system[] = ['key' => '启动用户', 'value' => get_current_user()];
         $view->system[] = ['key' => '监听端口', 'value' => $request->getServerParams()['server_port']];
         $view->system[] = ['key' => '操作系统', 'value' => \PHP_OS];
         $view->system[] = ['key' => 'PHP版本', 'value' => \PHP_VERSION];

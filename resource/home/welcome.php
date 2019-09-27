@@ -13,7 +13,7 @@ $data->link("terminal/css/jquery.terminal.min.css");
 
         <div class="layui-card">
             <div class="layui-card-header">Terminal</div>
-            <div class="layui-card-body" id="terminal" style="min-height: 500px">
+            <div class="layui-card-body" id="terminal" style="min-height: 500px;max-height: 600px">
 
             </div>
         </div>
@@ -58,11 +58,12 @@ $data->link("terminal/css/jquery.terminal.min.css");
     jQuery(function ($) {
         term = $('#terminal').terminal(function (command, term) {
             if (command == '') {
-
-            }else if (command == 'su') {
+            } else if (command == 'su') {
                 term.push(function (command, term) {
                     if (command == 'quit') {
                         term.pop()
+                    }
+                    if (command == '') {
                     } else {
                         data = pushCmd(command)
                         term.echo(data);
@@ -94,7 +95,7 @@ $data->link("terminal/css/jquery.terminal.min.css");
             },
             type: "post",
             dataType: 'json',
-            async:false,
+            async: false,
             success: function (data) {
                 console.log(data);
                 str = data.data

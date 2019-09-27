@@ -6,7 +6,7 @@ namespace SwoftAdmin\Tool\View\Button;
 
 use SwoftAdmin\Tool\View\BaseButton;
 
-class NewWindow extends BaseButton
+class NewWindowIcon extends BaseButton
 {
     public $url;
     public $name;
@@ -14,11 +14,11 @@ class NewWindow extends BaseButton
     public $height = 600;
     public $width = 800;
 
-    public $icon = "";
+    public $icon = "&#xe63c;";
     /** @var string 最大化 */
     public $mix  = "false";
 
-    public function __construct(string $url, $name = "添加",$icon = "")
+    public function __construct(string $url, $name = '无标题',$icon = "&#xe63c;")
     {
         $this->url = admin_url($url, false);
         $this->name = $name;
@@ -28,10 +28,9 @@ class NewWindow extends BaseButton
     public function toString(): string
     {
         $str = <<<button
-                        <button class="layui-btn"
-                                onclick="xadmin.open('{$this->name}','{$this->url}',{$this->width},{$this->height},{$this->mix})">
-                            <i class="layui-icon">{$this->icon}</i>{$this->name}
-                        </button>
+                        <a onclick="xadmin.open('{$this->name}','{$this->url}',{$this->width},{$this->height},{$this->mix})">
+                            <i class="layui-icon">{$this->icon}</i>
+                        </a>
 button;
         return $str;
     }

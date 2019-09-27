@@ -1,5 +1,6 @@
 <?php /** @var Table $data */
 
+use SwoftAdmin\Tool\View\BaseButton;
 use SwoftAdmin\Tool\View\Table; ?>
 <div class="x-nav">
             <span class="layui-breadcrumb">
@@ -52,6 +53,17 @@ use SwoftAdmin\Tool\View\Table; ?>
                                         }; ?></td>
                                 <?php } ?>
                                 <td class="td-manage">
+                                    <?php /** @var BaseButton $button */foreach ($data->listButton as $button) {
+                                        $arr = [];
+                                        $url = $button->url;
+                                        foreach ($button->tableListFields as $field=>$param){
+                                            $field = is_numeric($field)?$param:$field;
+                                            $arr[] = $param."=".urlencode($info[$field]??"");
+                                        }
+                                        $button->url = $button->url."?".implode('&',$arr);
+                                        echo $button->toString();
+                                        $button->url = $url;
+                                    } ?>
                                 </td>
                             </tr>
                         <?php } ?>

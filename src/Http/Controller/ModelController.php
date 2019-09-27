@@ -10,6 +10,7 @@ use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use SwoftAdmin\Exec\Controller\Model;
 use SwoftAdmin\Tool\Exec;
 use SwoftAdmin\Tool\View\Button\NewWindow;
+use SwoftAdmin\Tool\View\Button\NewWindowIcon;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
 use SwoftAdmin\Tool\View\Table;
 use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
@@ -30,19 +31,24 @@ class ModelController
     {
         $list = Exec::bean(Model::class)->dao();
 
-        $listView = new Table();
-        $listView->title = "Dao";
-        $listView->listTitle = [
+        $view = new Table();
+        $view->title = "Dao";
+        $view->listTitle = [
             "title" => '标题',
             "path" => '类名',
             "bean" => '拥有Bean',
         ];
-        $listView->listHeader[] = new ReloadButton();
-        $listView->listHeader[] = new NewWindow('model/addClassShow','新增Dao');
+        $view->listHeader[] = new ReloadButton();
+        $view->listHeader[] = new NewWindow('model/addClassShow','新增Dao');
 
-        $listView->listData = is_array($list) ? $list : [];
+        $view->listData = is_array($list) ? $list : [];
 
-        return $listView->toString();
+        $button = new NewWindowIcon('file/show', '文件内容');
+        $button->mix = "true";
+        $button->addField(['path'=>'path']);
+        $view->addListButton($button);
+
+        return $view->toString();
     }
 
     /**
@@ -77,19 +83,24 @@ class ModelController
     {
         $list = Exec::bean(Model::class)->data();
 
-        $listView = new Table();
-        $listView->title = "Data目录";
-        $listView->listTitle = [
+        $view = new Table();
+        $view->title = "Data目录";
+        $view->listTitle = [
             "title" => '标题',
             "path" => '类名',
             "bean" => '拥有Bean',
         ];
-        $listView->listHeader[] = new ReloadButton();
-        $listView->listHeader[] = new NewWindow('model/addClassShow?title=Data&namespace=App/Model/Data/&suffix=Data','新增Data');
+        $view->listHeader[] = new ReloadButton();
+        $view->listHeader[] = new NewWindow('model/addClassShow?title=Data&namespace=App/Model/Data/&suffix=Data','新增Data');
 
-        $listView->listData = is_array($list) ? $list : [];
+        $view->listData = is_array($list) ? $list : [];
 
-        return $listView->toString();
+        $button = new NewWindowIcon('file/show', '文件内容');
+        $button->mix = "true";
+        $button->addField(['path'=>'path']);
+        $view->addListButton($button);
+
+        return $view->toString();
     }
 
     /**
@@ -100,19 +111,24 @@ class ModelController
     {
         $list = Exec::bean(Model::class)->logic();
 
-        $listView = new Table();
-        $listView->title = "Logic目录";
-        $listView->listTitle = [
+        $view = new Table();
+        $view->title = "Logic目录";
+        $view->listTitle = [
             "title" => '标题',
             "path" => '类名',
             "bean" => '拥有Bean',
         ];
-        $listView->listHeader[] = new ReloadButton();
-        $listView->listHeader[] = new NewWindow('model/addClassShow?title=Logic&namespace=App/Model/Logic/&suffix=Logic','新增Logic');
+        $view->listHeader[] = new ReloadButton();
+        $view->listHeader[] = new NewWindow('model/addClassShow?title=Logic&namespace=App/Model/Logic/&suffix=Logic','新增Logic');
 
-        $listView->listData = is_array($list) ? $list : [];
+        $view->listData = is_array($list) ? $list : [];
 
-        return $listView->toString();
+        $button = new NewWindowIcon('file/show', '文件内容');
+        $button->mix = "true";
+        $button->addField(['path'=>'path']);
+        $view->addListButton($button);
+
+        return $view->toString();
     }
 
     /**
