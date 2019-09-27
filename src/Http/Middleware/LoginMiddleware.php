@@ -46,8 +46,7 @@ class LoginMiddleware implements MiddlewareInterface
             return context()->getResponse()->withContent("admin 未开启")->withStatus(404);
         }
 
-        $cookie = $request->getCookieParams();
-        $token    = $cookie["__admin_token"]??"";
+        $token    = $this->login->getRequestToken($request);
 
         if ( !$token || !$this->login->verifyToken($token) ){
             $path = $request->getUri()->getPath();

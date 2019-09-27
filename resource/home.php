@@ -4,7 +4,7 @@
 use SwoftAdmin\Tool\View\Home;
 
 $this->include('layouts/container',['username'=>$data->username]) ?>
-<?php $this->include('layouts/left', $data->leftMenu) ?>
+<?php $this->include('layouts/left', ['menu'=>$data->getLeftMenu()]) ?>
 <!-- 中部开始 -->
 <!-- 右侧主体开始 -->
 <div class="page-content">

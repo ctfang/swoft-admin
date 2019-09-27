@@ -27,20 +27,24 @@ class PublicController
     protected $login;
 
     /**
+     * @RequestMapping(route="/__admin",method={RequestMethod::GET})
+     * @param  Request  $request
+     * @param  Response  $response
+     * @return Response|Login
+     */
+    public function base(Request $request, Response $response)
+    {
+        return $response->redirect('/__admin/login');
+    }
+
+    /**
      * show login
      * @RequestMapping("login",method={RequestMethod::GET})
      * @param  Request  $request
-     * @param  Response  $response
-     * @return Response|\Swoft\Rpc\Server\Response|Login
+     * @return Response|Login
      */
     public function login(Request $request, Response $response)
     {
-        $cookie = $request->getCookieParams();
-        $token = $cookie["__admin_token"] ?? "";
-        if ($token && $this->login->verifyToken($token)) {
-            return $response->redirect('/__admin/home');
-        }
-
         $view = new Login();
         $view->url = 'login';
 
@@ -61,7 +65,7 @@ class PublicController
 
         if ($this->login->login($username, $password)) {
             $token = $this->login->getToken($username);
-            return $response->withCookie("__admin_token", $token)->redirect('/__admin/home');
+            return $response->withCookie($this->login->tokenKey, $token)->redirect('/__admin/home?'.$this->login->tokenKey."=".$token);
         }
 
         return $response->redirect('login');

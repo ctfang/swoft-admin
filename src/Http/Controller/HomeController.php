@@ -8,7 +8,9 @@ use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\Middleware;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
+use SwoftAdmin\Tool\Model\LoginModel;
 use SwoftAdmin\Tool\View\Home;
+use SwoftAdmin\Tool\View\Login;
 use SwoftAdmin\Tool\View\Welcome;
 
 /**
@@ -28,8 +30,7 @@ class HomeController
     public function home(Request $request)
     {
         $view = new Home();
-        $cookie = $request->getCookieParams();
-        $token = $cookie["__admin_token"] ?? "";
+        $token = bean(LoginModel::class)->getRequestToken($request);
         $arr = explode('.', $token);
         $view->username = $arr[1] ?? "admin";
         return $view->toString();

@@ -29,12 +29,11 @@ function getRootPath(): string
 /**
  * 覆盖框架的函数
  * @param  string  $name
- * @return string
+ * @return object|string|mixed
  */
 function bean(string $name){
     return $name;
 }
-
 function alias(string $name){
     return $name;
 }
