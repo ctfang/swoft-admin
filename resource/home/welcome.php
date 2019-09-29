@@ -37,16 +37,10 @@ $data->link("terminal/css/jquery.terminal.min.css");
         </div>
         <div class="layui-card">
             <div class="layui-card-header">扩展信息</div>
-            <div class="layui-card-body ">
-                <table class="layui-table">
-                    <tbody>
+            <div class="layui-card-body layui-btn-container">
                     <?php foreach ($data->ext as $datum) { ?>
-                        <tr>
-                            <th><?php echo $datum["key"] ?? ""; ?></th>
-                        </tr>
+                        <button type="button" class="layui-btn"><?php echo $datum["key"]; ?></button>
                     <?php } ?>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
