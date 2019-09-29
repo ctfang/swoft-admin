@@ -21,7 +21,7 @@ class Home extends BaseView
      * @param $url
      * @param $name
      * @param  string  $icon
-     * @param  null  $group 分组名称
+     * @param  null  $group  分组名称
      */
     public static function addBaseMenu($url, $name, $icon = '&#xe6b4;', $group = null)
     {
@@ -36,12 +36,12 @@ class Home extends BaseView
     {
         $menu = $this->leftMenu;
 
-        foreach (self::$merMenu as $group=>$arr){
-            foreach ($arr as $name=>$con){
+        foreach (self::$merMenu as $group => $arr) {
+            foreach ($arr as $name => $con) {
                 $con['name'] = $name;
-                if( $group ){
+                if ($group) {
                     $menu[$group]['ul'][] = $con;
-                }else{
+                } else {
                     $menu[$name] = $con;
                 }
             }
@@ -53,36 +53,44 @@ class Home extends BaseView
      * @var array 基础菜单
      */
     public $leftMenu = [
-        "Controller"=>[
+        "Controller" => [
             'name' => 'Controller',
-            'icon' => '&#xe6b4;',
+            'icon' => '&#xe696;',
             'ul' => [
-                ['name' => '路由列表', 'icon' => '&#xe6b4;', 'url' => 'control/routes'],
-                ['name' => '控制器', 'icon' => '&#xe6b4;', 'url' => 'control/list'],
-                ['name' => '中间件', 'icon' => '&#xe6b4;', 'url' => 'mid/list'],
+                ['name' => '路由列表', 'icon' => '&#xe6fa;', 'url' => 'control/routes'],
+                ['name' => '控制器', 'icon' => '&#xe6fa;', 'url' => 'control/list'],
+                ['name' => '中间件', 'icon' => '&#xe6fa;', 'url' => 'mid/list'],
             ],
         ],
-        "Model"=>[
+        "Model" => [
             'name' => 'Model',
             'icon' => '&#xe6b4;',
             'ul' => [
-                ['name' => 'Dao', 'icon' => '&#xe6b4;', 'url' => 'model/dao'],
-                ['name' => 'Data', 'icon' => '&#xe6b4;', 'url' => 'model/data'],
-                ['name' => 'logic', 'icon' => '&#xe6b4;', 'url' => 'model/logic'],
+                ['name' => 'Dao', 'icon' => '&#xe6fa;', 'url' => 'model/dao'],
+                ['name' => 'Data', 'icon' => '&#xe6fa;', 'url' => 'model/data'],
+                ['name' => 'logic', 'icon' => '&#xe6fa;', 'url' => 'model/logic'],
             ],
         ],
-        "Console"=>[
+        "Console" => [
             'name' => 'Console',
-            'icon' => '&#xe6b4;',
+            'icon' => '&#xe723;',
             'ul' => [
-                ['name' => 'Command', 'icon' => '&#xe6b4;', 'url' => 'console/command'],
+                ['name' => 'Command', 'icon' => '&#xe6fa;', 'url' => 'console/command'],
             ],
         ],
-        "Crontab"=>[
+        "Crontab" => [
             'name' => 'Crontab',
-            'icon' => '&#xe6b4;',
+            'icon' => '&#xe829;',
             'ul' => [
-                ['name' => 'Crontab', 'icon' => '&#xe6b4;', 'url' => 'crontab/lists'],
+                ['name' => 'Crontab', 'icon' => '&#xe70c;', 'url' => 'crontab/lists'],
+            ],
+        ],
+        "Logs" => [
+            'name' => 'Logs',
+            'icon' => '&#xe83c;',
+            'ul' => [
+                ['name' => 'Logs', 'icon' => '&#xe724;', 'url' => 'logs/logs'],
+                ['name' => 'Runtime', 'icon' => '&#xe724;', 'url' => 'logs/runtime'],
             ],
         ],
     ];

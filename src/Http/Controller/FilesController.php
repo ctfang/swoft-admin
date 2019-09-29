@@ -26,6 +26,7 @@ class FilesController
     public function show(Request $request)
     {
         $namespace = $request->get("path");
+        $namespace = str_replace('..','',$namespace);
 
         $arr = explode('App\\', $namespace);
 

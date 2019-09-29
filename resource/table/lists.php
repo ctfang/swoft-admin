@@ -17,11 +17,13 @@ use SwoftAdmin\Tool\View\Table; ?>
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md12">
             <div class="layui-card">
-                <div class="layui-card-header">
+                <?php if ($data->listHeader) {
+                    echo "<div class=\"layui-card-header\">"; ?>
                     <?php foreach ($data->listHeader as $button) {
                         echo $button->toString();
                     } ?>
-                </div>
+                    <?php echo "</div>";
+                } ?>
                 <div class="layui-card-body ">
                     <table class="layui-table layui-form">
                         <thead>
@@ -53,14 +55,15 @@ use SwoftAdmin\Tool\View\Table; ?>
                                         }; ?></td>
                                 <?php } ?>
                                 <td class="td-manage">
-                                    <?php /** @var BaseButton $button */foreach ($data->listButton as $button) {
+                                    <?php /** @var BaseButton $button */
+                                    foreach ($data->listButton as $button) {
                                         $arr = [];
                                         $url = $button->url;
-                                        foreach ($button->tableListFields as $field=>$param){
-                                            $field = is_numeric($field)?$param:$field;
-                                            $arr[] = $param."=".urlencode($info[$field]??"");
+                                        foreach ($button->tableListFields as $field => $param) {
+                                            $field = is_numeric($field) ? $param : $field;
+                                            $arr[] = $param."=".urlencode($info[$field] ?? "");
                                         }
-                                        $button->url = $button->url."?".implode('&',$arr);
+                                        $button->url = $button->url."?".implode('&', $arr);
                                         echo $button->toString();
                                         $button->url = $url;
                                     } ?>

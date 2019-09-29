@@ -8,6 +8,7 @@ use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\Middleware;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
+use Swoft\Log\Helper\Log;
 use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
 use SwoftAdmin\Tool\View\TerminalView;
 
@@ -39,16 +40,18 @@ class TerminalController
     {
         $cmd = $request->post("run");
 
-        if ( !$cmd ){
+        if (!$cmd) {
             return "\n";
         }
 
         $root = alias("@app");
         $root = dirname($root);
-        exec("cd {$root};".$cmd,$arr);
 
-        $str = implode("\n",$arr);
+        $command = "cd {$root};".$cmd;
+        Log::info($command);
+        exec($command, $arr);
 
+        $str = implode("\n", $arr);
         return $str;
     }
 }
