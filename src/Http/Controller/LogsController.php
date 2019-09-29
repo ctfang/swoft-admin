@@ -151,8 +151,9 @@ class LogsController
         $path = $this->getPath($path);
         $fileName = pathinfo($path,PATHINFO_BASENAME);
 
-        return $response->withHeader('Content-Disposition',
-            "attachment; filename={$fileName}")->file($path, "application/octet-stream");
+        $response->getCoResponse()->header('Content-Disposition',"attachment; filename={$fileName}");
+
+        return $response->file($path, "application/octet-stream");
     }
 
     /**
