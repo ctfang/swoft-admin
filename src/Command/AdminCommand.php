@@ -13,6 +13,7 @@ use Swoft\Console\Helper\Show;
 use Swoft\Http\Server\HttpServer;
 use Swoft\Server\Command\BaseServerCommand;
 use Swoft\Server\Exception\ServerException;
+use Swoft\Server\Server;
 use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
 use function bean;
 use function input;
@@ -178,16 +179,16 @@ class AdminCommand extends BaseServerCommand
     }
 
     /**
-     * @return HttpServer
+     * @return Server
      * @throws ReflectionException
      * @throws ContainerException
      */
-    private function createServer(): HttpServer
+    private function createServer(): Server
     {
         $script  = input()->getScript();
         $command = $this->getFullCommand();
 
-        /** @var HttpServer $server */
+        /** @var Server $server */
         $server = bean('adminServer');
         $server->setScriptFile(Swoft::app()->getPath($script));
         $server->setFullCommand($command);

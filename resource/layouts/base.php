@@ -10,11 +10,11 @@
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
     <link rel="stylesheet" href="<?php admin_src(); ?>css/font.css">
     <link rel="stylesheet" href="<?php admin_src(); ?>css/xadmin.css"><?php /** @var array $viewLink */
-    foreach ($viewLink as $str) {
+    foreach ($viewLink??[] as $str) {
         echo $str;
     }
     /** @var array $viewScript */
-    foreach ($viewScript as $str) {
+    foreach ($viewScript??[] as $str) {
         echo $str;
     }
     ?>

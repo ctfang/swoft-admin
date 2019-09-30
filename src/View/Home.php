@@ -53,9 +53,9 @@ class Home extends BaseView
      * @var array 基础菜单
      */
     public $leftMenu = [
-        "Controller" => [
-            'name' => 'Controller',
-            'icon' => '&#xe696;',
+        "Http" => [
+            'name' => 'Http',
+            'icon' => '&#xe828;',
             'ul' => [
                 ['name' => '路由列表', 'icon' => '&#xe6fa;', 'url' => 'control/routes'],
                 ['name' => '控制器', 'icon' => '&#xe6fa;', 'url' => 'control/list'],

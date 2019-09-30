@@ -39,7 +39,7 @@ if (!function_exists('admin_view')) {
      */
     function admin_view(string $template, array $data = [], $layout = null)
     {
-        $viewPath = dirname(dirname(__DIR__))."/resource/views/";
+        $viewPath = dirname(dirname(__DIR__))."/resource/";
         /**
          * @var Renderer $renderer
          * @var Response $response
