@@ -1,24 +1,45 @@
 <?php /** @var Form $data */
 
 use SwoftAdmin\Tool\View\Form;
-$data->script("https://cdn.staticfile.org/html5shiv/r29/html5.min.js");
-$data->script("https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js");
  ?>
-<div class="layui-fluid">
-    <div class="layui-row">
-        <form action="<?php admin_url($data->action) ?>" method="<?php echo $data->method ?>" class="layui-form layui-form-pane">
-            <?php foreach ($data->item as $item){ echo $item->toString(); } ?>
-            <div class="layui-form-item">
-                <button class="layui-btn" lay-submit="" lay-filter="add">增加</button>
-            </div>
-        </form>
+<form class="layui-fluid layui-form layui-form-pane" action="">
+    <?php foreach ($data->item as $item) {
+        echo $item->toString();
+    } ?>
+    <div class="">
+        <button class="layui-btn layui-btn-fluid layui-btn-lg" type="submit" lay-submit="" lay-filter="add">增加</button>
     </div>
-</div>
+</form>
 <script>
     layui.use(['form','layer'], function(){
         $ = layui.jquery;
         var form = layui.form
             ,layer = layui.layer;
+
+        //监听提交
+        form.on('submit(add)',
+            function (data) {
+                $.ajax({
+                    type: "<?php echo strtoupper($data->method); ?>",
+                    url: "<?php admin_url($data->action); ?>",
+                    data: data.field,
+                    success:function (status) {
+                        layer.alert("增加成功", {icon: 6}, function () {
+                            //关闭当前frame
+                            xadmin.close();
+
+                            // 可以对父窗口进行刷新
+                            xadmin.father_reload();
+                        });
+                    },
+                    error:function (data) {
+                        layer.alert("增加失败", {icon: 6}, function () {
+
+                        });
+                    }
+                });
+                return false;
+            });
 
 
         form.on('checkbox(father)', function(data){

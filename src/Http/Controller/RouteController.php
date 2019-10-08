@@ -6,8 +6,10 @@ namespace SwoftAdmin\Tool\Http\Controller;
 
 use Swoft\Context\Context;
 use Swoft\Http\Message\Request;
+use Swoft\Http\Message\Response;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
+use SwoftAdmin\Exec\Controller\Controller as Controller2;
 use SwoftAdmin\Exec\Controller\Middleware;
 use SwoftAdmin\Exec\Controller\Postmen;
 use SwoftAdmin\Tool\Exec;
@@ -41,7 +43,7 @@ class RouteController
         $view->listTitle['controller'] = "控制器";
         $view->listTitle['action'] = "函数";
 
-        $view->listData = Exec::bean(\SwoftAdmin\Exec\Controller\Controller::class)->getRoutes();
+        $view->listData = Exec::bean(Controller2::class)->getRoutes();
 
         $view->listHeader[] = new ReloadButton();
         $view->listHeader[] = new NewWindow('control/addRoute', '新增路由');
@@ -118,7 +120,7 @@ class RouteController
             $mids[$key] = urlencode($mid);
         }
 
-        $data = Exec::bean(\SwoftAdmin\Exec\Controller\Controller::class)->addControllers($name, $title, $mids);
+        $data = Exec::bean(Controller2::class)->addControllers($name, $title, $mids);
 
         return $data;
     }
@@ -136,7 +138,7 @@ class RouteController
         $view->listTitle['mid'] = "中间件";
         $view->listTitle['prefix'] = "路由前缀";
 
-        $view->listData = Exec::bean(\SwoftAdmin\Exec\Controller\Controller::class)->getControllers();
+        $view->listData = Exec::bean(Controller2::class)->getControllers();
 
         $view->listHeader[] = new ReloadButton();
         $view->listHeader[] = new NewWindow('control/addControl', '新增控制器');
@@ -150,12 +152,52 @@ class RouteController
     }
 
     /**
+     * 新增路由
      * @RequestMapping(route="addRoute")
      * @param  Request  $request
-     * @return array
+     * @return \Swoft\Http\Message\Response
      */
     public function addRoute(Request $request)
     {
-        return ["todo"];
+        $view = new Form("生成路由");
+        $view->action = 'control/addRoutePost';
+
+        $view->item[] = new Form\InputForm('route', "路由", '路由地址', 'required');
+        $controls = Exec::bean(Controller2::class)->getControllers();
+        if ($controls){
+            $select = new Form\SelectForm('controller','控制器');
+            foreach ($controls as $control){
+                $select->addOption($control["path"],$control["path"]);
+            }
+            $view->item[] = $select;
+        }
+        $view->item[] = new Form\InputForm('function', "函数", '函数名称', 'required');
+        $view->item[] = new Form\TextareaForm('title', "标题", '函数首行注释');
+
+        return $view->toString();
+    }
+
+    /**
+     * 新增路由
+     * @RequestMapping(route="addRoutePost")
+     * @param  Request  $request
+     * @return string
+     * @throws \ReflectionException
+     */
+    public function createRoute(Request $request)
+    {
+        $data = [
+            'route' => $request->post("route"),
+            'controller' => $request->post("controller"),
+            'function' => $request->post("function"),
+            'title' => $request->post("title"),
+        ];
+
+        $status = Exec::bean(Controller2::class)->addRoute(urlencode($data['controller']),$data['route'],$data['function'],$data['title']);
+
+        if ( $status ){
+            return "OK";
+        }
+        return "不能创建";
     }
 }

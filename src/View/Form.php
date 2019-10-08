@@ -14,4 +14,15 @@ class Form extends BaseView
 
     /** @var array */
     public $item = [];
+
+    public function __construct($title = "表单提交")
+    {
+        $this->title = $title;
+    }
+
+    public function addButton(BaseButton $button):BaseButton
+    {
+        $this->item[] = $button;
+        return $button;
+    }
 }

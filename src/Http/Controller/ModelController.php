@@ -12,6 +12,7 @@ use SwoftAdmin\Tool\Exec;
 use SwoftAdmin\Tool\View\Button\NewWindow;
 use SwoftAdmin\Tool\View\Button\NewWindowIcon;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
+use SwoftAdmin\Tool\View\Form;
 use SwoftAdmin\Tool\View\Table;
 use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
 
@@ -64,15 +65,15 @@ class ModelController
         $namespace = $request->get('namespace', "App/Model/Dao/");
         $suffix = $request->get('suffix', "Dao");
 
-        $addView = new AddView();
+        $addView = new Form();
         $addView->title = $title;
-        $addView->addText('title',"标题",'注释第一行说明');
-        $addView->addText('className',"类名","自动加 {$suffix} 后缀");
-        $addView->addValue('namespace',$namespace);
-        $addView->addValue('suffix',$suffix);
+        $addView->item[] = new Form\InputForm('title',"标题",'注释第一行说明');
+        $addView->item[] = new Form\InputForm('className',"类名","自动加 {$suffix} 后缀");
+        $addView->item[] = (new Form\InputForm('namespace','命名空间'))->setValue($namespace);
+        $addView->item[] = (new Form\InputForm('suffix','后缀'))->setValue($suffix);
 
-        $addView->createUrl = 'model/addClass';
-        return $addView->toView();
+        $addView->action = 'model/addClass';
+        return $addView->toString();
     }
 
     /**
@@ -135,6 +136,7 @@ class ModelController
      * 新增类文件
      * @param  Request  $request
      * @RequestMapping("addClass")
+     * @return string
      */
     public function addClass(Request $request)
     {
@@ -144,5 +146,6 @@ class ModelController
         $suffix = $request->post("suffix",'');
 
         Exec::bean(Model::class)->addClass($namespace, $name, $title, $suffix);
+        return "新增成功";
     }
 }

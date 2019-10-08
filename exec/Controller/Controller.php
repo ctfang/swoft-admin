@@ -75,4 +75,57 @@ class Controller
         file_put_contents($path, $template);
         return;
     }
+
+    /**
+     * @param $con
+     * @param $route
+     * @param $function
+     * @param $title
+     * @return bool
+     * @throws \ReflectionException
+     */
+    public function addRoute($con,$route,$function,$title = "无注释")
+    {
+        $con = urldecode($con);
+
+        $reflector = new \ReflectionClass($con);
+        $filePath  = $reflector->getFileName();
+
+        $content = file_get_contents($filePath);
+
+        $content = trim($content);
+
+        $strLen = strlen($content);
+
+        $endStr = $content{$strLen-1};
+
+        if ( $endStr!="}" ){
+            return false;
+        }
+
+        $firstStr = substr($content,0,-1);
+
+        $backups = getRootPath().'/runtime/admin/backups/';
+        if (!is_dir($backups)){
+            mkdir($backups,0755, true);
+        }
+
+        copy($filePath,$backups.'/'.time().'.php');
+
+        $newFunc = file_get_contents(__DIR__.'/../template/Route');
+        $str1 = "use Swoft\\Http\\Message\\Request;";
+        $str2 = "use Swoft\\Http\\Message\\Response;";
+        if ( strpos($firstStr,$str1)===false ){
+            $newFunc = str_replace(["Request "],["\Swoft\Http\Message\Request "],$newFunc);
+        }
+        if ( strpos($firstStr,$str2)===false ){
+            $newFunc = str_replace(["Response "],["\\Swoft\\Http\\Message\\Response "],$newFunc);
+        }
+
+        $newFunc = str_replace(["{title}","{route}","{function}"],[$title,$route,$function],$newFunc);
+
+
+        file_put_contents($filePath,$firstStr.$newFunc);
+        return true;
+    }
 }

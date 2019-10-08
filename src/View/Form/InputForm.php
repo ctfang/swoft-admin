@@ -13,6 +13,7 @@ class InputForm extends BaseButton
     public $name;
     public $placeholder;
     public $verify;
+    public $value;
 
     /**
      * InputForm constructor.
@@ -31,6 +32,12 @@ class InputForm extends BaseButton
         $this->verify = $verify;
     }
 
+    public function setValue($data)
+    {
+        $this->value = " value=\"{$data}\"";
+        return $this;
+    }
+
     public function toString(): string
     {
         $verify = $this->verify?"<span class=\"x-red\">*</span>":"";
@@ -39,9 +46,9 @@ class InputForm extends BaseButton
                 <label for="{$this->field}" class="layui-form-label">
                     {$verify}{$this->name}
                 </label>
-                <div class="layui-input-inline">
+                <div class="layui-input-block">
                     <input type="text" id="{$this->field}" name="{$this->field}" required="" lay-verify="{$this->verify}"
-                           autocomplete="off" class="layui-input" placeholder="{$this->placeholder}">
+                           autocomplete="off" class="layui-input" placeholder="{$this->placeholder}"{$this->value}>
                 </div>
             </div>
 str;

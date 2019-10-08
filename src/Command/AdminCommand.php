@@ -47,7 +47,7 @@ class AdminCommand extends BaseServerCommand
      */
     public function start(): void
     {
-        LoginMiddleware::$enable = true;
+        LoginMiddleware::$enable = 1;
 
         $server = $this->createServer();
 

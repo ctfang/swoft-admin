@@ -19,6 +19,9 @@ use SwoftAdmin\Tool\Model\LoginModel;
  */
 class LoginMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var null|int 0禁用1admin启动2http启动
+     */
     public static $enable = null;
 
     /**

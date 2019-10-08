@@ -1,4 +1,4 @@
-<?php /** @var array $data */ ?><!-- 左侧菜单开始 -->
+<!-- 左侧菜单开始 -->
 <div class="left-nav">
     <div id="side-nav">
         <ul id="nav">

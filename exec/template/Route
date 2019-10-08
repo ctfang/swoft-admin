@@ -1,0 +1,16 @@
+
+    /**
+     * {title}
+     * @RequestMapping("{route}")
+     * @param  Request  $request
+     * @param  Response  $response
+     * @return Response
+     */
+    public function {function}(Request $request,Response $response)
+    {
+        return $response->withData([
+            'title'=>"这是由Admin创建的路由",
+            'get'=>$request->get(),
+        ]);
+    }
+}
