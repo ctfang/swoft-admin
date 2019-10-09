@@ -9,6 +9,7 @@ use Swoft\Http\Server\Annotation\Mapping\Middleware;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use SwoftAdmin\Exec\Controller\Console;
 use SwoftAdmin\Tool\Exec;
+use SwoftAdmin\Tool\Http\Msg;
 use SwoftAdmin\Tool\View\Button\NewWindow;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
 use SwoftAdmin\Tool\View\Form;
@@ -70,7 +71,7 @@ class ConsoleController
      * 新增类文件
      * @param  Request  $request
      * @RequestMapping("addClass")
-     * @return string
+     * @return array
      */
     public function addClass(Request $request)
     {
@@ -79,6 +80,6 @@ class ConsoleController
         $pre = $request->post("pre", '');
 
         Exec::bean(Console::class)->add($name, $des, $pre);
-        return "新增类文件 OK";
+        return Msg::success();
     }
 }

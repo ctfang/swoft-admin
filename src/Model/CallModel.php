@@ -6,6 +6,10 @@ namespace SwoftAdmin\Tool\Model;
 
 use SwoftAdmin\Tool\Exec;
 
+/**
+ * 代理执行 SwoftAdmin\Exec 命名空间下的代码
+ * @package SwoftAdmin\Tool\Model
+ */
 class CallModel
 {
     public $handel;

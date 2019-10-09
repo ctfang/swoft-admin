@@ -9,6 +9,7 @@ use Swoft\Http\Server\Annotation\Mapping\Middleware;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use SwoftAdmin\Exec\Controller\Model;
 use SwoftAdmin\Tool\Exec;
+use SwoftAdmin\Tool\Http\Msg;
 use SwoftAdmin\Tool\View\Button\NewWindow;
 use SwoftAdmin\Tool\View\Button\NewWindowIcon;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
@@ -136,7 +137,7 @@ class ModelController
      * 新增类文件
      * @param  Request  $request
      * @RequestMapping("addClass")
-     * @return string
+     * @return array
      */
     public function addClass(Request $request)
     {
@@ -146,6 +147,6 @@ class ModelController
         $suffix = $request->post("suffix",'');
 
         Exec::bean(Model::class)->addClass($namespace, $name, $title, $suffix);
-        return "新增成功";
+        return Msg::success();
     }
 }

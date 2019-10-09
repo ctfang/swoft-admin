@@ -9,6 +9,7 @@ use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use Swoft\Http\Server\Annotation\Mapping\RequestMethod;
 use SwoftAdmin\Exec\Controller\Middleware;
 use SwoftAdmin\Tool\Exec;
+use SwoftAdmin\Tool\Http\Msg;
 use SwoftAdmin\Tool\View\Button\NewWindow;
 use SwoftAdmin\Tool\View\Button\NewWindowIcon;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
@@ -86,11 +87,11 @@ class MiddlewareController
         $className = Context::get()->getRequest()->post("className");
         $classTitle = Context::get()->getRequest()->post("classTitle");
         if (!$className) {
-            return;
+            return Msg::error("失败");
         }
 
         Exec::bean(Middleware::class)->addMiddleware($className,$classTitle);
 
-        return "创建中间件 OK";
+        return Msg::success();
     }
 }

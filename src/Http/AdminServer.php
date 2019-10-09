@@ -1,7 +1,15 @@
 <?php
 
+namespace SwoftAdmin\Tool\Http;
 
-class AdminServer extends \Swoft\Http\Server\HttpServer
+use Swoft\Bean\Annotation\Mapping\Bean;
+use Swoft\Http\Server\HttpServer;
+
+/**
+ * @Bean("adminServer")
+ * @package SwoftAdmin\Tool\Http
+ */
+class AdminServer extends HttpServer
 {
     /**
      * Server type

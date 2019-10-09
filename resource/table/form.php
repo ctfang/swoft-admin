@@ -23,19 +23,21 @@ use SwoftAdmin\Tool\View\Form;
                     type: "<?php echo strtoupper($data->method); ?>",
                     url: "<?php admin_url($data->action); ?>",
                     data: data.field,
-                    success:function (status) {
-                        layer.alert("增加成功", {icon: 6}, function () {
-                            //关闭当前frame
-                            xadmin.close();
+                    success:function (dta) {
+                        if (dta.code===0){
+                            layer.alert("增加成功", {icon: 6}, function () {
+                                //关闭当前frame
+                                xadmin.close();
 
-                            // 可以对父窗口进行刷新
-                            xadmin.father_reload();
-                        });
+                                // 可以对父窗口进行刷新
+                                xadmin.father_reload();
+                            });
+                        }else{
+                            layer.msg(dta.msg);
+                        }
                     },
-                    error:function (data) {
-                        layer.alert("增加失败", {icon: 6}, function () {
-
-                        });
+                    error: function(err) {
+                        console.log(err)
                     }
                 });
                 return false;

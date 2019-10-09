@@ -28,9 +28,9 @@ class NewWindowIcon extends BaseButton
     public function toString(): string
     {
         $str = <<<button
-                        <a onclick="xadmin.open('{$this->name}','{$this->url}',{$this->width},{$this->height},{$this->mix})">
+                        <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="xadmin.open('{$this->name}','{$this->url}',{$this->width},{$this->height},{$this->mix})">
                             <i class="layui-icon">{$this->icon}</i>
-                        </a>
+                        </button>
 button;
         return $str;
     }

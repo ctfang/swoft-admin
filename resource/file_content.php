@@ -2,7 +2,7 @@
 
 use SwoftAdmin\Tool\View\FileContent; ?>
 <div class="layui-card-body ">
-<pre lay-encode="true" class="layui-code" lay-title="<?php echo $data->layTitle; ?>" lay-skin="notepad">
+<pre lay-encode="true" class="layui-code">
 <?php echo $data->layContent; ?>
 </pre>
 </div>
@@ -11,7 +11,10 @@ use SwoftAdmin\Tool\View\FileContent; ?>
     layui.use(['form','code'], function(){
         form = layui.form;
 
-        layui.code();
+        layui.code({
+            skin: 'notepad', //如果要默认风格，不用设定该key。
+            about: false
+        });
 
     });
 </script>

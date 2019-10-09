@@ -13,10 +13,10 @@ use SwoftAdmin\Exec\Controller\Controller as Controller2;
 use SwoftAdmin\Exec\Controller\Middleware;
 use SwoftAdmin\Exec\Controller\Postmen;
 use SwoftAdmin\Tool\Exec;
+use SwoftAdmin\Tool\Http\Msg;
 use SwoftAdmin\Tool\View\Button\NewWindow;
 use SwoftAdmin\Tool\View\Button\NewWindowIcon;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
-use SwoftAdmin\Tool\View\FileContent;
 use SwoftAdmin\Tool\View\Form;
 use SwoftAdmin\Tool\View\Table;
 use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
@@ -122,7 +122,7 @@ class RouteController
 
         $data = Exec::bean(Controller2::class)->addControllers($name, $title, $mids);
 
-        return $data;
+        return Msg::success();
     }
 
     /**
@@ -163,6 +163,22 @@ class RouteController
         $view->action = 'control/addRoutePost';
 
         $view->item[] = new Form\InputForm('route', "路由", '路由地址', 'required');
+
+        $select = new Form\SelectForm('method','路由方式');
+        $options = [
+            "GET" => 'GET',
+            "POST" => 'POST',
+            "PUT" => 'PUT',
+            "PATCH" => 'PATCH',
+            "DELETE" => 'DELETE',
+            "OPTIONS" => 'OPTIONS',
+            "HEAD" => 'HEAD',
+        ];
+        foreach ($options as $option){
+            $select->addOption($option,$option);
+        }
+        $view->item[] = $select;
+
         $controls = Exec::bean(Controller2::class)->getControllers();
         if ($controls){
             $select = new Form\SelectForm('controller','控制器');
@@ -181,7 +197,7 @@ class RouteController
      * 新增路由
      * @RequestMapping(route="addRoutePost")
      * @param  Request  $request
-     * @return string
+     * @return array
      * @throws \ReflectionException
      */
     public function createRoute(Request $request)
@@ -191,13 +207,14 @@ class RouteController
             'controller' => $request->post("controller"),
             'function' => $request->post("function"),
             'title' => $request->post("title"),
+            'method' => $request->post("method"),
         ];
 
         $status = Exec::bean(Controller2::class)->addRoute(urlencode($data['controller']),$data['route'],$data['function'],$data['title']);
 
-        if ( $status ){
-            return "OK";
+        if ( $status===true ){
+            return Msg::success();
         }
-        return "不能创建";
+        return Msg::error($status);
     }
 }
