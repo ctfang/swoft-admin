@@ -70,7 +70,7 @@ http://your.com/__admin/login
 - [x] [控制器代码查看](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
 - [x] [Logs查看](https://github.com/ctfang/swoft-admin/blob/master/src/Http/Controller) 
 - [ ] 第三方登录模拟
-- [ ] 启动&关闭http
-- [ ] 界面创建路由(空函数)
+- [x] 启动&关闭http
+- [x] 界面创建路由(空函数)
 - [ ] 配置查看
 - [ ] 进程信息
