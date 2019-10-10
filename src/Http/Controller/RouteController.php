@@ -159,7 +159,7 @@ class RouteController
      */
     public function addRoute(Request $request)
     {
-        $view = new Form("生成路由");
+        $view = new Form("生成路由,路由函数会在类文件尾部生成");
         $view->action = 'control/addRoutePost';
 
         $view->item[] = new Form\InputForm('route', "路由", '路由地址', 'required');

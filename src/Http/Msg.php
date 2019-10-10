@@ -13,7 +13,7 @@ class Msg
      * @param  array  $data
      * @return array
      */
-    public static function success(array $data = []): array
+    public static function success($data = []): array
     {
         return [
             "code" => 0,

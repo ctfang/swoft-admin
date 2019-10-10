@@ -14,7 +14,7 @@ $data->link("terminal/css/jquery.terminal.min.css");
 
             <div class="layui-card">
                 <div class="layui-card-header">Terminal</div>
-                <div class="layui-card-body" id="terminal" style="min-height: 580px;max-height: 580px">
+                <div class="layui-card-body" id="terminal" style="min-height: 582px;max-height: 582px">
 
                 </div>
             </div>
@@ -22,11 +22,11 @@ $data->link("terminal/css/jquery.terminal.min.css");
             <div class="layui-card">
                 <div class="layui-card-header">常用功能</div>
                 <div class="layui-card-body layui-btn-container">
-                    <button type="button" class="layui-btn" lay-filter="restart">重启服务</button>
-                    <button type="button" class="layui-btn layui-btn-normal" lay-filter="entity">生成实体</button>
-                    <button type="button" class="layui-btn layui-btn-warm" lay-filter="authReload">自动重启</button>
-                    <button type="button" class="layui-btn layui-btn-danger" lay-filter="stopAdmin">禁用Admin</button>
-                    <button type="button" class="layui-btn layui-btn-primary" lay-filter="stop">停止服务</button>
+                    <button type="button" class="layui-btn layui-btn-primary" onClick="buttonEvent('php bin/swoft http:stop');">停止服务</button>
+                    <button type="button" class="layui-btn" onClick="buttonEvent('restart');">重启服务</button>
+                    <button type="button" class="layui-btn layui-btn-normal" onClick="buttonEvent('entity');">生成实体</button>
+                    <button type="button" class="layui-btn layui-btn-warm" onClick="buttonEvent('autoReload');">自动重启</button>
+                    <button type="button" class="layui-btn layui-btn-danger" onClick="buttonEvent('stopAdmin');">禁用Admin</button>
                 </div>
             </div>
         </div>
@@ -59,16 +59,6 @@ $data->link("terminal/css/jquery.terminal.min.css");
     </div>
 </div>
 <script>
-    layui.use('form', function(){
-        var form = layui.form;
-
-        form.on("",function (data) {
-
-        });
-
-    });
-</script>
-<script>
     var term;
     jQuery(function ($) {
         term = $('#terminal').terminal(function (command, term) {
@@ -95,12 +85,12 @@ $data->link("terminal/css/jquery.terminal.min.css");
             greetings: "命令行执行辅助,不支持柱塞运行\n\n默认在命令行加[php bin/swoft]\n\n切换sys模式 : su\n退出sys模式 : quit\n清除屏幕    : clear\n",
             prompt: 'bin/swoft>',
             onBlur: function () {
-                // prevent loosing focus
+                // 移出事件
                 return false;
             }
         });
     });
-
+    // 执行命令
     function pushCmd(cmd) {
         var str = "无返回"
         $.ajax({
@@ -112,11 +102,26 @@ $data->link("terminal/css/jquery.terminal.min.css");
             dataType: 'json',
             async: false,
             success: function (data) {
-                console.log(data);
                 str = data.data
             }
         })
         return str
     }
 
+    // 常用服务函数
+    function buttonEvent(event) {
+        term.echo("button>[[;red;]"+event+"]\n")
+        $.ajax({
+            url: "<?php echo admin_url("terminal/button/run");?>",
+            data: {
+                'run': event,
+            },
+            type: "post",
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                term.echo(data.data);
+            }
+        })
+    }
 </script>

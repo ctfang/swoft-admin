@@ -10,6 +10,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Annotation\Mapping\Inject;
+use SwoftAdmin\Tool\Http\AdminServer;
 use SwoftAdmin\Tool\Model\LoginModel;
 
 /**
@@ -19,11 +20,6 @@ use SwoftAdmin\Tool\Model\LoginModel;
  */
 class LoginMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var null|int 0禁用1admin启动2http启动
-     */
-    public static $enable = null;
-
     /**
      * @Inject()
      * @var LoginModel
@@ -40,10 +36,10 @@ class LoginMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (self::$enable === null) {
+        if (AdminServer::$enable === null) {
             $enable = env('ADMIN_ENABLE', false);
         } else {
-            $enable = self::$enable;
+            $enable = AdminServer::$enable;
         }
         if (!$enable) {
             return context()->getResponse()->withContent("admin 未开启")->withStatus(404);

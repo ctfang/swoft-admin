@@ -10,11 +10,10 @@ use Swoft\Console\Annotation\Mapping\Command;
 use Swoft\Console\Annotation\Mapping\CommandMapping;
 use Swoft\Console\Annotation\Mapping\CommandOption;
 use Swoft\Console\Helper\Show;
-use Swoft\Http\Server\HttpServer;
 use Swoft\Server\Command\BaseServerCommand;
 use Swoft\Server\Exception\ServerException;
 use Swoft\Server\Server;
-use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
+use SwoftAdmin\Tool\Http\AdminServer;
 use function bean;
 use function input;
 use function output;
@@ -47,7 +46,7 @@ class AdminCommand extends BaseServerCommand
      */
     public function start(): void
     {
-        LoginMiddleware::$enable = 1;
+        AdminServer::$enable = 1;
 
         $server = $this->createServer();
 

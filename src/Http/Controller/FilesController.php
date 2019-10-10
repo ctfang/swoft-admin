@@ -44,6 +44,8 @@ class FilesController
         $view = new FileContent();
         $view->title = "显示控制器内容";
         $view->layContent = file_get_contents($path);
+        // 防止空行被装修器删除
+        $view->layContent = str_replace(PHP_EOL.PHP_EOL,PHP_EOL."    ".PHP_EOL,$view->layContent);
         return $view->toString();
     }
 }
