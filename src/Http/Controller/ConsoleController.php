@@ -7,10 +7,12 @@ use Swoft\Http\Message\Request;
 use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\Middleware;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
+use Swoft\Log\Helper\Log;
 use SwoftAdmin\Exec\Controller\Console;
 use SwoftAdmin\Tool\Exec;
 use SwoftAdmin\Tool\Http\Msg;
 use SwoftAdmin\Tool\View\Button\NewWindow;
+use SwoftAdmin\Tool\View\Button\NewWindowIcon;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
 use SwoftAdmin\Tool\View\Form;
 use SwoftAdmin\Tool\View\Table;
@@ -25,6 +27,7 @@ use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
 class ConsoleController
 {
     /**
+     * 命令列表
      * @RequestMapping("command")
      */
     public function command()
@@ -42,6 +45,9 @@ class ConsoleController
         $listView->listHeader[] = new NewWindow('console/addClassShow', '新增命令');
 
         $listView->listData = is_array($list) ? $list : [];
+        $button = new NewWindowIcon("console/run","运行","&#xe623;");
+        $button->addField(['name'=>'run']);
+        $listView->listButton[] = $button;
 
         return $listView->toString();
     }
@@ -81,5 +87,25 @@ class ConsoleController
 
         Exec::bean(Console::class)->add($name, $des, $pre);
         return Msg::success();
+    }
+
+    /**
+     * 执行命令行
+     * @param  Request  $request
+     * @RequestMapping("run")
+     * @return string
+     */
+    public function runCmd(Request $request)
+    {
+        $cmd = $request->get("run", '');
+        $cmd = "php bin/swoft ".$cmd;
+        $root = alias("@app");
+        $root = dirname($root);
+
+        $command = "cd {$root};".$cmd;
+        Log::info($command);
+        exec($command, $arr);
+
+        return implode("<br>", $arr);
     }
 }

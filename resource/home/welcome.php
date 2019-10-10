@@ -22,10 +22,10 @@ $data->link("terminal/css/jquery.terminal.min.css");
             <div class="layui-card">
                 <div class="layui-card-header">常用功能</div>
                 <div class="layui-card-body layui-btn-container">
-                    <button type="button" class="layui-btn layui-btn-primary" onClick="buttonEvent('php bin/swoft http:stop');">停止服务</button>
+                    <button type="button" class="layui-btn layui-btn-warm" onClick="buttonEvent('php bin/swoft http:stop');">停止服务</button>
                     <button type="button" class="layui-btn" onClick="buttonEvent('restart');">重启服务</button>
-                    <button type="button" class="layui-btn layui-btn-normal" onClick="buttonEvent('entity');">生成实体</button>
-                    <button type="button" class="layui-btn layui-btn-warm" onClick="buttonEvent('autoReload');">自动重启</button>
+                    <button type="button" class="layui-btn layui-btn-normal" onClick="buttonEvent('php bin/swoft entity:c -y');">生成实体</button>
+                    <button type="button" class="layui-btn layui-btn-primary" onClick="buttonEvent('php bin/swoft mig:up -y');">数据迁移</button>
                     <button type="button" class="layui-btn layui-btn-danger" onClick="buttonEvent('stopAdmin');">禁用Admin</button>
                 </div>
             </div>

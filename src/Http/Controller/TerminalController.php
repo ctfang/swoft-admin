@@ -79,9 +79,6 @@ class TerminalController
                     return "[[;darkgreen;]已经禁用admin]";
                 }
                 break;
-            case "entity":
-
-                break;
             default:
                 $str = $this->run($cmd);
                 $str = str_replace("]", "\]", $str);
