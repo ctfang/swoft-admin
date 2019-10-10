@@ -41,16 +41,39 @@ class LoginMiddleware implements MiddlewareInterface
         } else {
             $enable = AdminServer::$enable;
         }
+        // 检查开关
         if (!$enable) {
             return context()->getResponse()->withContent("admin 未开启")->withStatus(404);
         }
+        // 检查是否限制IP
+        $allow = env("ADMIN_ALLOW","*.*.*.*");
+        if ( $allow!=="*.*.*.*" ){
+            $remoteAddr = $request->getHeader('x-real-ip');
+            $accept = true;
+            $allowARR = explode('.',$allow);
+            foreach ($remoteAddr as $str){
+                $strArr = explode('.',$str);
+                foreach ($allowARR as $key=>$item){
+                    if ( $item!="*" && $strArr[$key]!=$item ){
+                        $accept = false;
+                        break 2;
+                    }
+                }
+            }
+            if (!$accept){
+                return context()->getResponse()->withContent("限制IP访问")->withStatus(404);
+            }
+        }
 
-        $token    = $this->login->getRequestToken($request);
+        // 检查是否需登录
+        if (env('ADMIN_ENABLE_LOGIN', true)) {
+            $token = $this->login->getRequestToken($request);
 
-        if ( !$token || !$this->login->verifyToken($token) ){
-            $path = $request->getUri()->getPath();
-            if ( $path!=admin_url("login",false) ){
-                return context()->getResponse()->redirect(admin_url("login",false));
+            if (!$token || !$this->login->verifyToken($token)) {
+                $path = $request->getUri()->getPath();
+                if ($path != admin_url("login", false)) {
+                    return context()->getResponse()->redirect(admin_url("login", false));
+                }
             }
         }
 

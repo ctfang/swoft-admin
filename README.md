@@ -26,10 +26,15 @@ composer require ctfang/swoft-admin
     ],
 ~~~~
 
-## 配置静态文件 修改 .env 配置
+## 修改 .env 配置
 
 默认 `ADMIN_WEB = http://127.0.0.1/public/`
 ~~~~
+# 设置ip访问限制 (默认不限制)
+ADMIN_ALLOW="*.*.*.*"
+# 打开登录开关 (默认登录后才能访问)
+ADMIN_ENABLE_LOGIN=1
+# 配置静态文件地址
 ADMIN_WEB="http://127.0.0.1:18366/"
 ~~~~
 

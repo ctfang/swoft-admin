@@ -37,7 +37,10 @@ class PublicController
      */
     public function base(Request $request, Response $response)
     {
-        return $response->redirect('/__admin/login');
+        if (env('ADMIN_ENABLE_LOGIN', true)) {
+            return $response->redirect('/__admin/login');
+        }
+        return $response->redirect('/__admin/home');
     }
 
     /**
