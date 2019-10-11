@@ -14,10 +14,76 @@ use SwoftAdmin\Exec\Model\Dao\RoutesResource;
 use SwoftAdmin\Exec\Model\Logic\Directory;
 
 class Controller
+{
+    /**
+     * @param $control
+     * @throws \ReflectionException
+     */
+    public function test($control)
     {
+        $reflector = new \ReflectionClass($control);
+        $method = $reflector->getMethod('request');
+        $startLine = $method->getStartLine();
+        $endLine = $method->getEndLine();
+
+        $contents = [];
+        $lines = file($method->getFileName());
+        foreach ($lines as $key => $line) {
+            if ($key >= $startLine && $key <= $endLine) {
+                $contents[] = $line;
+            }
+        }
+
+        $scanFunc = [
+            'get',
+            'post',
+        ];
+
+        $params = [];
+        foreach ($contents as $content){
+            foreach ($scanFunc as $func){
+                $scanStr = "\$request->{$func}(";
+                if ( strpos($content,$scanStr)!==false ){
+                    $content = substr($content,strpos($content,$scanStr)+strlen($scanStr),-1);
+                    $match = [];
+                    $pattern = "/[^\)]+\)/is"; // 以 ")" 结束前部分,保证必须是一行的代码
+                    if (preg_match_all($pattern, $content, $match)) {
+                        if ( !isset($match[0][0]) ){
+                            continue;
+                        }
+                        $content = $match[0][0];
+                        $content = substr($content,0,-1);
+                        $arr = explode(',',$content);
+                        if ( count($arr)==2 || count($arr)==1 ){
+                            // 必须是普通 string int 无换行,无特殊字符的默认值
+                            if (isset($arr[1])){
+                                $default = $arr[1];
+                                if ( $default{0}=="'" || $default{0}=="\"" ){
+                                    $default = str_replace(["'","\""],["",""],$arr[1]);
+                                }
+                            }else{
+                                $default = null;
+                            }
+
+                            $params[$func][] = [
+                                'key'=>str_replace(["'","\""],["",""],$arr[0]),
+                                'default'=>$default,
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        print_r($params);
+        echo "\n";
+    }
+
     /**
      * 获取所有路由信息
      * @return array
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \ReflectionException
      * @CommandMapping(name="routes")
      */
     public function getRoutes()
