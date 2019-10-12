@@ -9,6 +9,7 @@ use Swoft\Http\Server\Annotation\Mapping\Controller;
 use Swoft\Http\Server\Annotation\Mapping\RequestMapping;
 use SwoftAdmin\Exec\Application;
 use Swoft\Validator\Annotation\Mapping\Validate;
+use SwoftAdmin\Exec\Model\Logic\ReflectionRoute;
 
 class Postmen
 {
@@ -38,7 +39,7 @@ class Postmen
             // 类注解遍历
             foreach ($classAnnotations as $classAnnotation) {
                 if ($classAnnotation instanceof Controller) {
-                    $postmen['item'][] = $this->getControllerItem($reflectionClass,$classAnnotation);
+                    $postmen['item'][] = $this->getControllerItem($reflectionClass, $classAnnotation);
                 }
             }
         }
@@ -55,42 +56,54 @@ class Postmen
         ];
     }
 
-    protected function getControllerItem(\ReflectionClass $reflectionClass,Controller $classAnnotation)
+    protected function getControllerItem(\ReflectionClass $reflectionClass, Controller $classAnnotation)
     {
         $itemList = [];
         $itemList['name'] = $this->getTitle($reflectionClass->getDocComment());
         $itemList['item'] = [];
 
+
+        $contr = new ReflectionRoute();
+
         $reflectionMethods = $reflectionClass->getMethods();
         foreach ($reflectionMethods as $reflectionMethod) {
             $action = [];
-            $action['name']        = $this->getTitle($reflectionMethod->getDocComment());
-            $action['event']        = $this->getTestEvent();
+            $action['name'] = $this->getTitle($reflectionMethod->getDocComment());
+            $action['event'] = $this->getTestEvent();
 
             $prefix = $classAnnotation->getPrefix();
             $url = [];
             $methodAnnotations = $this->reader->getMethodAnnotations($reflectionMethod);
             if (!empty($methodAnnotations)) {
-                foreach ($methodAnnotations as $annotation){
+                foreach ($methodAnnotations as $annotation) {
                     $url = [];
                     $body = [];
-                    if ($annotation instanceof RequestMapping){
-                        $path  = $prefix?$prefix."/".$annotation->getRoute():$annotation->getRoute();
+                    if ($annotation instanceof RequestMapping) {
+                        $path = $prefix ? $prefix."/".$annotation->getRoute() : $annotation->getRoute();
                         $url['raw'] = "{{url}}".$path;
                         $url['host'] = ["{{url}}"];
-                        $url['path'] = explode('/',$path);
-                        $methods     = $annotation->getMethod();
+                        $url['path'] = explode('/', $path);
+                        $methods = $annotation->getMethod();
                         $method = "GET";
-                        if ($methods){
+                        if ($methods) {
                             $method = reset($methods);
                         }
-                    }elseif ($annotation instanceof Validate){
+                        $routesInfo = $contr->getParameters($reflectionClass, $reflectionMethod);
+
                         $body['mode'] = "formdata";
-                        $body['formdata'] = [];
+                        foreach ($routesInfo['params'] ?? [] as $item) {
+                            $tem = [
+                                "key" => $item['key'],
+                                "value" => $item['default'],
+                                "description" => $item['title'],
+                                "type" => "text"
+                            ];
+                            $body['formdata'][] = $tem;
+                        }
                     }
                 }
 
-                if ($url){
+                if ($url) {
                     $action["request"]["url"] = $url;
                     $action["request"]["body"] = $body;
                     $action["request"]["method"] = $method;
@@ -109,9 +122,9 @@ class Postmen
     {
         return [
             [
-                "listen"=> "test",
-                "script"=>[
-                    "exec"=>[
+                "listen" => "test",
+                "script" => [
+                    "exec" => [
                         "var data = JSON.parse(responseBody)",
                         "if(data.code == '0'){",
                         "    tests[\"this code is 0\"] = true",
@@ -120,7 +133,7 @@ class Postmen
                         "}"
                     ],
                 ],
-                "type"=> "text/javascript"
+                "type" => "text/javascript"
             ],
         ];
     }
@@ -130,22 +143,22 @@ class Postmen
      * @param $doc
      * @return string
      */
-    protected function getTitle($doc):string
+    protected function getTitle($doc): string
     {
         $title = "";
 
-        $arr = explode(PHP_EOL,$doc);
+        $arr = explode(PHP_EOL, $doc);
 
-        foreach ($arr as $str){
-            $str = str_replace(["/","*"],"",$str);
+        foreach ($arr as $str) {
+            $str = str_replace(["/", "*"], "", $str);
             $str = trim($str);
 
-            if (strlen($str)>0){
+            if (strlen($str) > 0) {
                 $title = $str;
                 break;
             }
         }
-        if( $title{0}=="@" ){
+        if ($title{0} == "@") {
             return "";
         }
         return $title;

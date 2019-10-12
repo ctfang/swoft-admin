@@ -17,6 +17,7 @@ use SwoftAdmin\Tool\Http\Msg;
 use SwoftAdmin\Tool\View\Button\NewWindow;
 use SwoftAdmin\Tool\View\Button\NewWindowIcon;
 use SwoftAdmin\Tool\View\Button\ReloadButton;
+use SwoftAdmin\Tool\View\Document;
 use SwoftAdmin\Tool\View\Form;
 use SwoftAdmin\Tool\View\Table;
 use SwoftAdmin\Tool\Http\Middleware\LoginMiddleware;
@@ -49,9 +50,8 @@ class RouteController
         $view->listHeader[] = new NewWindow('control/addRoute', '新增路由');
         $view->listHeader[] = new NewWindow('control/setPostmen', '导出postmen');
 
-        $button = new NewWindowIcon('file/show', '文件内容');
-        $button->mix = "true";
-        $button->addField(['controller'=>'path']);
+        $button = new NewWindowIcon('control/document', '文件内容');
+        $button->addField(['controller', 'action']);
         $view->addListButton($button);
 
         return $view->toString();
@@ -164,7 +164,7 @@ class RouteController
 
         $view->item[] = new Form\InputForm('route', "路由", '路由地址', 'required');
 
-        $select = new Form\SelectForm('method','路由方式');
+        $select = new Form\SelectForm('method', '路由方式');
         $options = [
             "GET" => 'GET',
             "POST" => 'POST',
@@ -174,16 +174,16 @@ class RouteController
             "OPTIONS" => 'OPTIONS',
             "HEAD" => 'HEAD',
         ];
-        foreach ($options as $option){
-            $select->addOption($option,$option);
+        foreach ($options as $option) {
+            $select->addOption($option, $option);
         }
         $view->item[] = $select;
 
         $controls = Exec::bean(Controller2::class)->getControllers();
-        if ($controls){
-            $select = new Form\SelectForm('controller','控制器');
-            foreach ($controls as $control){
-                $select->addOption($control["path"],$control["path"]);
+        if ($controls) {
+            $select = new Form\SelectForm('controller', '控制器');
+            foreach ($controls as $control) {
+                $select->addOption($control["path"], $control["path"]);
             }
             $view->item[] = $select;
         }
@@ -210,11 +210,40 @@ class RouteController
             'method' => $request->post("method"),
         ];
 
-        $status = Exec::bean(Controller2::class)->addRoute(urlencode($data['controller']),$data['route'],$data['function'],$data['title']);
+        $status = Exec::bean(Controller2::class)->addRoute(urlencode($data['controller']), $data['route'],
+            $data['function'], $data['title']);
 
-        if ( $status===true ){
+        if ($status === true) {
             return Msg::success();
         }
         return Msg::error($status);
+    }
+
+    /**
+     * 路由转化成文档
+     * @RequestMapping(route="document")
+     * @param  Request  $request
+     * @return Response|\Swoft\WebSocket\Server\Message\Response
+     * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \ReflectionException
+     */
+    public function getDocument(Request $request)
+    {
+        $data = [
+            'controller' => $request->get("controller"),
+            'action' => $request->get("action"),
+        ];
+
+        $view = new Document("测试");
+
+        $view->route = Exec::bean(Controller2::class)->getRouteInfo(urlencode($data['controller']), $data['action']);
+
+        if (!is_array($view->route)){
+            $view->route = [];
+        }
+
+        $view->item[] = new Form\InputForm("test", '测试');
+
+        return $view->toString();
     }
 }

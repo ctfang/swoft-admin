@@ -12,71 +12,28 @@ use SwoftAdmin\Exec\Model\Dao\ControllerResource;
 use SwoftAdmin\Exec\Model\Dao\MiddlewareResource;
 use SwoftAdmin\Exec\Model\Dao\RoutesResource;
 use SwoftAdmin\Exec\Model\Logic\Directory;
+use SwoftAdmin\Exec\Model\Logic\ReflectionRoute;
 
 class Controller
 {
     /**
-     * @param $control
+     * @param  string  $control
+     * @param  string  $action
+     * @return array
      * @throws \ReflectionException
+     * @throws \Doctrine\Common\Annotations\AnnotationException
      */
-    public function test($control)
+    public function getRouteInfo(string $control, string $action)
     {
-        $reflector = new \ReflectionClass($control);
-        $method = $reflector->getMethod('request');
-        $startLine = $method->getStartLine();
-        $endLine = $method->getEndLine();
-
-        $contents = [];
-        $lines = file($method->getFileName());
-        foreach ($lines as $key => $line) {
-            if ($key >= $startLine && $key <= $endLine) {
-                $contents[] = $line;
-            }
+        try {
+            $reflectionClass = new \ReflectionClass(urldecode($control));
+        } catch (\Throwable $exception) {
+            return [];
         }
 
-        $scanFunc = [
-            'get',
-            'post',
-        ];
+        $contr = new ReflectionRoute();
 
-        $params = [];
-        foreach ($contents as $content){
-            foreach ($scanFunc as $func){
-                $scanStr = "\$request->{$func}(";
-                if ( strpos($content,$scanStr)!==false ){
-                    $content = substr($content,strpos($content,$scanStr)+strlen($scanStr),-1);
-                    $match = [];
-                    $pattern = "/[^\)]+\)/is"; // 以 ")" 结束前部分,保证必须是一行的代码
-                    if (preg_match_all($pattern, $content, $match)) {
-                        if ( !isset($match[0][0]) ){
-                            continue;
-                        }
-                        $content = $match[0][0];
-                        $content = substr($content,0,-1);
-                        $arr = explode(',',$content);
-                        if ( count($arr)==2 || count($arr)==1 ){
-                            // 必须是普通 string int 无换行,无特殊字符的默认值
-                            if (isset($arr[1])){
-                                $default = $arr[1];
-                                if ( $default{0}=="'" || $default{0}=="\"" ){
-                                    $default = str_replace(["'","\""],["",""],$arr[1]);
-                                }
-                            }else{
-                                $default = null;
-                            }
-
-                            $params[$func][] = [
-                                'key'=>str_replace(["'","\""],["",""],$arr[0]),
-                                'default'=>$default,
-                            ];
-                        }
-                    }
-                }
-            }
-        }
-
-        print_r($params);
-        echo "\n";
+        return $contr->getParameters($reflectionClass,$reflectionClass->getMethod($action));
     }
 
     /**
@@ -126,17 +83,18 @@ class Controller
             $use .= "\nuse Swoft\\Http\\Server\\Annotation\\Mapping\\Middleware;";
             foreach ($mids as $mid) {
                 $mid = urldecode($mid);
-                $arrT = explode("\\",$mid);
+                $arrT = explode("\\", $mid);
                 $midName = end($arrT);
                 $use .= "\nuse {$mid};";
                 $strMids = $strMids." *      @Middleware(".$midName."::class),\n";
             }
         }
-        if ($strMids){
+        if ($strMids) {
             $strMids = "\n * @Middlewares({\n".$strMids." * })";
         }
 
-        $template = str_replace(["{title}", "{name}", "{Middlewares}","{use}"], [$title, $name,$strMids,$use], $template);
+        $template = str_replace(["{title}", "{name}", "{Middlewares}", "{use}"], [$title, $name, $strMids, $use],
+            $template);
 
         file_put_contents($path, $template);
         return;
@@ -152,7 +110,7 @@ class Controller
      * @return bool|string
      * @throws \ReflectionException
      */
-    public function addRoute($con,$route,$function,$title = "无注释",$method = "GET")
+    public function addRoute($con, $route, $function, $title = "无注释", $method = "GET")
     {
         // 格式检查
         $con = urldecode($con);
@@ -164,28 +122,28 @@ class Controller
         $strLen = strlen($content);
         $endStr = $content{$strLen - 1};
 
-        if ( $endStr!="}" ){
+        if ($endStr != "}") {
             return "不是以 } 结束的类文件";
         }
 
-        if (strlen($function)<=2 || !preg_match('/^[_0-9a-z]{2,30}$/i', $function) ){
+        if (strlen($function) <= 2 || !preg_match('/^[_0-9a-z]{2,30}$/i', $function)) {
             return "函数名不合法";
         }
 
-        foreach ($reflector->getMethods() as $reflectionMethod){
-            if ( $reflectionMethod->getName()==$function ){
+        foreach ($reflector->getMethods() as $reflectionMethod) {
+            if ($reflectionMethod->getName() == $function) {
                 return "函数名已存在";
             }
         }
 
-        $firstStr = substr($content,0,-1);
+        $firstStr = substr($content, 0, -1);
         $backups = getRootPath().'/runtime/admin/backups/';
-        if (!is_dir($backups)){
-            if (!mkdir($backups,0755, true)){
+        if (!is_dir($backups)) {
+            if (!mkdir($backups, 0755, true)) {
                 return false;
             }
         }
-        copy($filePath,$backups.'/'.time().'.php');
+        copy($filePath, $backups.'/'.time().'.php');
         $newFunc = file_get_contents(__DIR__.'/../template/Route');
 
         /**
@@ -193,7 +151,7 @@ class Controller
          * 必须有 use Swoft\Http\Server\Annotation\Mapping\Controller;
          */
         $needController = "use Swoft\Http\Server\Annotation\Mapping\Controller;";
-        if ( strpos($firstStr,$needController)===false ){
+        if (strpos($firstStr, $needController) === false) {
             return false;
         }
 
@@ -203,15 +161,16 @@ class Controller
             "use Swoft\\Http\\Server\\Annotation\\Mapping\\RequestMapping;",
             "use Swoft\\Http\\Server\\Annotation\\Mapping\\RequestMethod;",
         ];
-        foreach ($useArr as $use){
-            if ( strpos($firstStr,$use)===false ){
-                $firstStr = str_replace([$needController],[$needController."\n".$use],$firstStr);
+        foreach ($useArr as $use) {
+            if (strpos($firstStr, $use) === false) {
+                $firstStr = str_replace([$needController], [$needController."\n".$use], $firstStr);
             }
         }
 
-        $newFunc = str_replace(["{title}","{route}","{function}","{method}"],[$title,$route,$function,$method],$newFunc);
+        $newFunc = str_replace(["{title}", "{route}", "{function}", "{method}"], [$title, $route, $function, $method],
+            $newFunc);
 
-        file_put_contents($filePath,$firstStr.$newFunc);
+        file_put_contents($filePath, $firstStr.$newFunc);
         return true;
     }
 }
