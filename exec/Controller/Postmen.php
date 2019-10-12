@@ -158,7 +158,7 @@ class Postmen
                 break;
             }
         }
-        if ($title{0} == "@") {
+        if ($title && $title{0} == "@") {
             return "";
         }
         return $title;
